@@ -16,12 +16,7 @@ export default function Header(){
             </Link>
             <div className="yellowPart"></div>
             <div className="cedetecContainer">
-                <Image
-                    src="/cedetec.jpg"
-                    alt="Image of CEDETEC"
-                    width={300}
-                    height={71}
-                />
+                
             </div>
         </header>
     )
