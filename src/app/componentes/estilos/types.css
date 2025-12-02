@@ -85,13 +85,13 @@
 .btn-submit {
     width: 100%;
     padding: 12px;
-    background: linear-gradient(90deg, #ffd300, #ffb700);
+    background: linear-gradient(90deg, #003d79, #003d79);
     border: none;
     border-radius: 12px;
     font-weight: bold;
     font-size: 15px;
     cursor: pointer;
-    color: black;
+    color: rgb(255, 255, 255);
 }
 
 .btn-submit:hover {
