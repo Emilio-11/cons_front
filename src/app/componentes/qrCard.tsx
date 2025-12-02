@@ -1,79 +1,47 @@
 "use client";
-
+import { useEffect, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
-import { useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import "./estilos/qr.css";
 
-export default function QRCard() {
-  const qrRef = useRef<HTMLDivElement>(null);
-  const [qrData, setQrData] = useState("");
-  const [scanning, setScanning] = useState(false);
-  const [scanned, setScanned] = useState(false); // para mostrar "Continuar"
-  const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
-  const router = useRouter();
+export default function QrCard() {
+  const [isScanning, setIsScanning] = useState(false);
 
-  const startScan = async () => {
-    if (!qrRef.current) return;
-    setScanning(true);
+  useEffect(() => {
+    const qrScanner = new Html5Qrcode("qr-reader");
 
-    const divId = qrRef.current.id;
-    const html5QrCode = new Html5Qrcode(divId);
-    html5QrCodeRef.current = html5QrCode;
+    const config = {
+      fps: 10,
+      qrbox: 250,
+      visualConstranits: { facingMode: "environment" }
+    };
 
-    try {
-      const cameras = await Html5Qrcode.getCameras();
-      if (!cameras || cameras.length === 0) {
-        alert("No se encontró ninguna cámara");
-        setScanning(false);
-        return;
-      }
+    qrScanner.start(
+      config.visualConstranits,
+      config,
+      decodedText => {
+        qrScanner.stop().then(() => {
+          qrScanner.clear();
+          console.log("Escaneo detenido");
+        });
+        console.log("Leido:", decodedText);
+      },
+      error => {}
+    );
 
-      const backCam =
-        cameras.find((cam) =>
-          ["back", "rear", "environment"].some((word) =>
-            cam.label.toLowerCase().includes(word)
-          )
-        ) || cameras[cameras.length - 1];
-
-      await html5QrCode.start(
-        backCam.id,
-        { fps: 10, qrbox: { width: 250, height: 250 } },
-        (decodedText) => {
-          setQrData(decodedText);
-          setScanned(true);
-          setScanning(false);
-          html5QrCode.stop();
-          html5QrCode.clear();
-        },
-        (err) => {
-          if (!err.includes("NotFoundException")) console.warn("Error leyendo QR:", err);
-        }
-      );
-    } catch (err) {
-      console.error("Error iniciando cámara:", err);
-      setScanning(false);
-    }
-  };
-
-  const handleContinue = () => {
-    router.push("/Reportes/Camara");
-  };
+    return () => {
+      qrScanner.stop().then(() => qrScanner.clear());
+    };
+  }, []);
 
   return (
-    <div className="qr-card">
-      <h2 className="qr-title">Lector QR</h2>
+    <div className="qr-wrapper">
+      <div className="qr-card">
+        <h2 className="qr-title">Escanear código QR</h2>
 
-      <div ref={qrRef} id="qr-reader" className="qr-reader"></div>
+        <div id="qr-reader" className="qr-reader"></div>
 
-      <div style={{ margin: "10px 0" }}>
-        {!scanning && !scanned && <button onClick={startScan}>Escanear</button>}
-        {scanning && <button disabled>Escaneando...</button>}
-        {scanned && <button onClick={handleContinue}>Continuar</button>}
+        <p className="qr-subtitle">Apunta la cámara al código</p>
       </div>
-
-      <h3 className="qr-subtitle">Resultado del QR</h3>
-      <textarea value={qrData} readOnly rows={5} />
     </div>
   );
 }

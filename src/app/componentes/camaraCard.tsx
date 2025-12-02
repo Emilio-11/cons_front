@@ -1,86 +1,75 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
+import dynamic from "next/dynamic";
+import { WebcamProps } from "react-webcam";
 import "./estilos/camara.css";
 
+// Import dinámico correcto para TypeScript
+const Webcam = dynamic<WebcamProps>(
+  () =>
+    import("react-webcam").then((mod) => mod.default), // <-- importante: accedemos a `default`
+  { ssr: false }
+);
+
 export default function CameraCard() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const photoRef = useRef<HTMLCanvasElement>(null);
-  const router = useRouter();
-  const [hasCamera, setHasCamera] = useState(false);
+  const webcamRef = useRef<Webcam>(null);
+  const [foto, setFoto] = useState<string | null>(null);
+  const [capturando, setCapturando] = useState(true);
 
-  // Activar cámara automáticamente al montar
-  useEffect(() => {
-    const startCamera = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: "environment" },
-        });
+  const videoConstraints = { facingMode: "environment" };
 
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          videoRef.current.play();
-          setHasCamera(true);
-        }
-      } catch (err) {
-        console.error("Error activando cámara:", err);
-      }
-    };
+  const tomarFoto = () => {
+    if (!webcamRef.current) return;
+    const imageSrc = webcamRef.current.getScreenshot();
+    if (imageSrc) {
+      setFoto(imageSrc);
+      setCapturando(false);
+    }
+  };
 
-    startCamera();
+  const resetearFoto = () => {
+    setFoto(null);
+    setCapturando(false);
+    setTimeout(() => setCapturando(true), 100);
+  };
 
-    // Limpiar cámara al desmontar
-    return () => {
-      const video = videoRef.current;
-      if (video && video.srcObject) {
-        const tracks = (video.srcObject as MediaStream).getTracks();
-        tracks.forEach((track) => track.stop());
-      }
-    };
-  }, []);
-
-  const takePhoto = () => {
-    const video = videoRef.current;
-    const canvas = photoRef.current;
-    if (!video || !canvas) return;
-
-    const width = 300;
-    const height = 300;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    canvas.width = width;
-    canvas.height = height;
-
-    ctx.drawImage(video, 0, 0, width, height);
-
-    // Obtener imagen en base64 (opcional)
-    const imageData = canvas.toDataURL("image/png");
-    console.log("Foto capturada:", imageData);
-
-    // Redirigir a Reportes/Types
-    router.push("/Reportes/Type");
+  const enviarFoto = async () => {
+    console.log("La foto se enviaría al backend:", foto);
+    setFoto(null);
+    setCapturando(false);
   };
 
   return (
     <div className="camera-card">
-      <h2 className="camera-title">Tomar fotografía</h2>
+      <h2 className="camera-title">Tomar evidencia</h2>
 
-      <video
-        ref={videoRef}
-        className="camera-video"
-        style={{ width: "100%", maxWidth: "400px" }}
-      ></video>
-
-      {hasCamera && (
-        <button className="camera-btn" onClick={takePhoto}>
-          Tomar foto
-        </button>
+      {capturando && (
+        <>
+          <Webcam
+            audio={false}
+            ref={webcamRef}
+            screenshotFormat="image/png"
+            videoConstraints={videoConstraints}
+            className="camera-video"
+          />
+          <button className="camera-btn" onClick={tomarFoto}>
+            Tomar foto
+          </button>
+        </>
       )}
 
-      <canvas ref={photoRef} style={{ display: "none" }} />
+      {foto && (
+        <div className="camera-preview">
+          <img src={foto} alt="Foto tomada" className="camera-video" />
+          <button className="camera-delete" onClick={resetearFoto}>
+            Volver a tomar
+          </button>
+          <button className="camera-btn" onClick={enviarFoto}>
+            Enviar evidencia
+          </button>
+        </div>
+      )}
     </div>
   );
 }

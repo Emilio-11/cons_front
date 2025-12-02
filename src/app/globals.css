@@ -18,7 +18,6 @@ header {
   overflow: hidden;
   background-color: #f9f9f9;
   z-index: 1;
-  
   height: 57px;
 }
 
@@ -93,6 +92,27 @@ footer {
   padding: 1.5rem;
 }
 
+
+.img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 400px;
+  height: 615px;
+  background-image: url('/rock.jpg');
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  z-index: -1;
+  opacity: 0.5;
+}
+
+.img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, #f9f9f9, rgba(128, 128, 128, 0));
+}
 
 input {
   flex: 1;
@@ -293,4 +313,8 @@ form {
   .container {
     margin: 0
   }
+}
+html, body {
+    height: 100%;
+    overflow: hidden;
 }

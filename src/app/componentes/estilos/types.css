@@ -1,19 +1,31 @@
-.card-incident {
-    width: 350px;
-    background:#ffffff;;          /* MISMO BACKGROUND */
-    padding: 20px;
-    border-radius: 16px;
-    color: black;                 /* MISMO COLOR DE TEXTO */
-    box-shadow: 0 0 15px rgba(0,0,0,0.4);
+/* Contenedor centrado */
+.card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    align-items: center; /* centra el contenido dentro de la card */
+    background: #f3f3f3;
 }
 
-
+/* Card principal */
+.card-incident {
+    width: 350px;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 16px;
+    color: black;
+    box-shadow: 0 0 15px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    
+}
 
 .title {
     font-size: 20px;
     font-weight: bold;
-    color:  #b8860b;
-    margin: 0;
+    color: #b8860b;
+    margin: 0 0 10px 0;
 }
 
 .subtitle {
@@ -21,6 +33,7 @@
     opacity: 0.9;
     color: black;
     margin-bottom: 15px;
+    text-align: center;
 }
 
 .chips-container {
@@ -28,11 +41,12 @@
     flex-wrap: wrap;
     gap: 8px;
     margin-bottom: 15px;
+    justify-content: center; /* centra los chips */
 }
 
 .chip {
     padding: 6px 12px;
-    background: #0059c9;        /* MISMO TONO AZUL OSCURO DE TUS OTROS BOTONES */
+    background: #0059c9;
     border: none;
     border-radius: 20px;
     color: #ffffff;
@@ -41,26 +55,33 @@
     transition: 0.2s;
 }
 
+.chip:hover {
+    transform: scale(1.05);
+}
+
 .chip-selected {
-    background: #0059c9;    
-    color:#ffffff;   /* AZUL SELECCIONADO COMO EN TU DISEÑO */
+    background: #003f8d;   /* azul más oscuro al estar seleccionado */
+    color: #ffffff;
+    transform: scale(1.05);
+    box-shadow: 0 0 8px rgba(0,0,0,0.3);
 }
 
 .textarea {
     width: 90%;
     height: 100px;
-    background: #0059c9;       /* MISMO FONDO OSCURO DE TEXTAREAS */
+    background: #0059c9;
     border: none;
     border-radius: 12px;
     padding: 10px;
     color: #ffffff;
     resize: none;
-    ;
     margin-bottom: 20px;
 }
+
 .textarea::placeholder {
     color: #cccccc;
 }
+
 .btn-submit {
     width: 100%;
     padding: 12px;
@@ -73,8 +94,23 @@
     color: black;
 }
 
-.chip-selected {
-    background: #003f8d;   /* azul más oscuro para que se note la selección */
-    color: #ffffff;
-    transform: scale(1.05);
+.btn-submit:hover {
+    opacity: 0.9;
+}
+
+/* Modal de confirmación */
+.modal-enviado {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffffff;
+    padding: 25px 40px;
+    border-radius: 16px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    font-weight: bold;
+    font-size: 18px;
+    color: #004aad;
+    z-index: 1000;
+    text-align: center;
 }

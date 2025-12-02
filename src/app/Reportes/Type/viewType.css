@@ -1,0 +1,7 @@
+.view-type-container {
+    height: 100vh;          /* altura completa de la ventana */
+    display: flex;
+    justify-content: center; /* centra horizontalmente */
+    align-items: center;     /* centra verticalmente */
+    background: #f3f3f3;     /* opcional: mismo fondo de la card */
+}
