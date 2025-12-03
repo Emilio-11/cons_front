@@ -9,6 +9,19 @@
   font-family: sans-serif;
 }
 
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  background: #3b82f6;
+  color: white;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
 /* Caja principal */
 .caja-login {
   margin-top: -250px;

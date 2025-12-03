@@ -1,37 +1,59 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
+import { useRouter } from "next/navigation";
 import "./estilos/qr.css";
 
 export default function QrCard() {
+  const router = useRouter();
   const [isScanning, setIsScanning] = useState(false);
 
   useEffect(() => {
-    const qrScanner = new Html5Qrcode("qr-reader");
+    const scanner = new Html5Qrcode("qr-reader");
 
     const config = {
       fps: 10,
       qrbox: 250,
-      visualConstranits: { facingMode: "environment" }
     };
 
-    qrScanner.start(
-      config.visualConstranits,
-      config,
-      decodedText => {
-        qrScanner.stop().then(() => {
-          qrScanner.clear();
-          console.log("Escaneo detenido");
-        });
-        console.log("Leido:", decodedText);
-      },
-      error => {}
-    );
+    scanner
+      .start(
+        { facingMode: "environment" }, // cámara trasera
+        config,
+        (decodedText) => {
+          console.log("Leído:", decodedText);
+
+
+          const id = decodedText.split(":")[1];
+
+          if (!id) {
+            alert("Código QR inválido");
+            return;
+          }
+
+
+          localStorage.setItem("idConcesionaria", id);
+
+
+          scanner.stop().then(() => {
+            scanner.clear();
+          });
+
+
+          router.push("/Reportes/Camara");
+        },
+        (error) => { }
+      )
+      .catch((err) => console.error("Error iniciando cámara:", err));
 
     return () => {
-      qrScanner.stop().then(() => qrScanner.clear());
+      scanner
+        .stop()
+        .then(() => scanner.clear())
+        .catch(() => { });
     };
-  }, []);
+  }, [router]);
 
   return (
     <div className="qr-wrapper">

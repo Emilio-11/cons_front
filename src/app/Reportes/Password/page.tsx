@@ -2,6 +2,7 @@
 
 import "@/app/Reportes/Password/password.css";
 import axios from "axios";
+import router from "next/router";
 import { useEffect, useState } from "react";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -20,7 +21,7 @@ export default function ContraseñaPage() {
   }, []);
 
 
-  
+
   const handleSetPassword = async () => {
     if (!Contraseña || !ContraseñaN) {
       setError("Por favor ingresa la contraseña y confírmala");
@@ -35,17 +36,16 @@ export default function ContraseñaPage() {
     setError("");
 
     try {
-      const response = await axios.post(`${apiUrl}/set-password`, {
+      const response = await axios.post(`${apiUrl}/auth/set-password`, {
         email,
-        pass:ContraseñaN,
+        pass: ContraseñaN,
       });
 
       const token = response.data.access_token;
       localStorage.setItem("token", token);
       window.dispatchEvent(new Event("tokenChanged"));
 
-      // Redirigir al Home
-      window.location.href = "/";
+      router.push("/Reportes/QR");
     } catch (err: any) {
       console.error(err);
       setError(
@@ -78,8 +78,8 @@ export default function ContraseñaPage() {
     </div>
   );
 
-    function setError(arg0: any) {
-        throw new Error("Function not implemented.", arg0);
-    }
+  function setError(arg0: any) {
+    throw new Error("Function not implemented.", arg0);
+  }
 
 }

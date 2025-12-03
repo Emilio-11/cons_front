@@ -1,44 +1,101 @@
 "use client";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import "./estilos/types.css";
 
 export default function TypeCard() {
   const router = useRouter();
 
-  const opciones: string[] = [
-    "Malas prácticas de higiene",
-    "Comida en mal estado",
-    "Trato inadecuado",
-    "Precios injustos",
-    "Productos caducados",
-    "Malas condiciones en instalaciones",
-    "Uso de áreas no designadas",
-    "Máquinas expendedoras",
-    "Falta de seguridad y protección civil",
-    "Porciones inadecuadas"
-  ];
-
-  const [seleccionadas, setSeleccionadas] = useState<string[]>([]);
-  const [descripcion, setDescripcion] = useState<string>("");
+  const [opciones, setOpciones] = useState<any[]>([]);
+  const [seleccionada, setSeleccionada] = useState<number | null>(null);
+  const [descripcion, setDescripcion] = useState("");
+  const [previewImagen, setPreviewImagen] = useState<string | null>(null);
   const [mensajeEnviado, setMensajeEnviado] = useState(false);
 
-  const toggleChip = (opcion: string) => {
-    if (seleccionadas.includes(opcion)) {
-      setSeleccionadas(seleccionadas.filter(i => i !== opcion));
-    } else {
-      setSeleccionadas([...seleccionadas, opcion]);
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const concesionariaId = typeof window !== "undefined" ? localStorage.getItem("concesionariaId") : null;
+
+
+  useEffect(() => {
+    const fetchTipos = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reportes`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await res.json();
+        setOpciones(data); // [{id_tipoUsuario, tipoUsuario}]
+      } catch (err) {
+        console.error("Error obteniendo tipos:", err);
+      }
+    };
+
+    if (token) fetchTipos();
+  }, [token]);
+
+
+  useEffect(() => {
+    const img = localStorage.getItem("imagenReporte");
+    if (img) setPreviewImagen(img);
+  }, []);
+
+
+  const handleSubmit = async () => {
+    if (!seleccionada) {
+      alert("Debes seleccionar un tipo de reporte");
+      return;
     }
-  };
 
-  const handleSubmit = () => {
-    // Aquí puedes agregar tu lógica de envío al backend si quieres
-    setMensajeEnviado(true);
+    if (!descripcion.trim()) {
+      alert("La descripción no puede estar vacía");
+      return;
+    }
 
-    // Redireccionar automáticamente después de 2 segundos
-    setTimeout(() => {
-      router.push("/");
-    }, 2000);
+    if (!previewImagen) {
+      alert("No hay imagen para enviar");
+      return;
+    }
+
+
+    const blob = await fetch(previewImagen).then((res) => res.blob());
+    const file = new File([blob], "evidencia.jpg", { type: "image/jpeg" });
+
+    const formData = new FormData();
+    formData.append("tipoReporte", String(seleccionada));
+    formData.append("estado", "1");
+    formData.append("concesionaria", String(concesionariaId));
+    formData.append("descripcion", descripcion);
+    formData.append("imagen", file);
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reportes`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!res.ok) {
+        alert("Error al enviar el reporte");
+        return;
+      }
+
+      setMensajeEnviado(true);
+
+      // limpiar
+      localStorage.removeItem("imagenReporte");
+
+      setTimeout(() => {
+        router.push("/");
+      }, 2000);
+    } catch (err) {
+      alert("Error al enviar reporte");
+      console.error(err);
+    }
   };
 
   return (
@@ -48,24 +105,40 @@ export default function TypeCard() {
         Selecciona el tipo de problema y cuéntanos brevemente qué ocurrió.
       </p>
 
+
       <div className="chips-container">
-        {opciones.map((op, i) => (
+        {opciones.map((op) => (
           <button
-            key={i}
-            className={`chip ${seleccionadas.includes(op) ? "chip-selected" : ""}`}
-            onClick={() => toggleChip(op)}
+            key={op.id_tipoUsuario}
+            className={`chip ${seleccionada === op.id_tipoUsuario ? "chip-selected" : ""}`}
+            onClick={() => setSeleccionada(op.id_tipoUsuario)}
           >
-            {op}
+            {op.tipoUsuario}
           </button>
         ))}
       </div>
 
+
+      {previewImagen && (
+        <div className="img-preview">
+          <img src={previewImagen} alt="preview" />
+          <button
+            className="btn-retomar"
+            onClick={() => router.push("/Reportes/Camara")}
+          >
+            Retomar foto
+          </button>
+        </div>
+      )}
+
+
       <textarea
         className="textarea"
-        placeholder="Ejemplo: Encontré comida en mal estado en la vitrina de postres cerca de la caja 2..."
+        placeholder="Ejemplo: Encontré comida en mal estado..."
         value={descripcion}
         onChange={(e) => setDescripcion(e.target.value)}
       ></textarea>
+
 
       <button className="btn-submit" onClick={handleSubmit}>
         Enviar reporte
