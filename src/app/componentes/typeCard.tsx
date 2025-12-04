@@ -13,20 +13,24 @@ export default function TypeCard() {
   const [previewImagen, setPreviewImagen] = useState<string | null>(null);
   const [mensajeEnviado, setMensajeEnviado] = useState(false);
 
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const token = typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
   const concesionariaId = typeof window !== "undefined" ? localStorage.getItem("idConcesionaria") : null;
-
+  const usuarioId = typeof window !== "undefined" ? sessionStorage.getItem("idUser") : null;
 
   useEffect(() => {
     const fetchTipos = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reportes`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reportes/tipos`, {
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
         });
+        console.log("Token en fetchTipos:", token); // <-- AQUÍ
 
         const data = await res.json();
+        console.log("🔍 DATA RECIBIDA DESDE BACK:", data);
+    console.log("🟦 ES ARRAY?:", Array.isArray(data));
         setOpciones(data); // [{id_tipoUsuario, tipoUsuario}]
       } catch (err) {
         console.error("Error obteniendo tipos:", err);
@@ -70,7 +74,8 @@ export default function TypeCard() {
     formData.append("concesionaria", String(concesionariaId));
     formData.append("descripcion", descripcion);
     formData.append("imagen", file);
-    
+    formData.append("fecha", new Date().toISOString());
+    formData.append("usuarioId", String(usuarioId)); 
 
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reportes`, {

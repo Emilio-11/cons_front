@@ -41,7 +41,7 @@ export default function ContraseñaPage() {
       });
 
       const token = response.data.access_token;
-      localStorage.setItem("token", token);
+      sessionStorage.setItem("token", token);
       window.dispatchEvent(new Event("tokenChanged"));
 
       router.push("/Reportes/QR");

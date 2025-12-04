@@ -6,8 +6,6 @@ import { jwtDecode } from "jwt-decode";
 import "./estilos/login.css";
 
 export default function Login() {
-  "use client";
-
 
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -15,7 +13,7 @@ export default function Login() {
 
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     if (!token) return;
 
     try {
@@ -29,7 +27,7 @@ export default function Login() {
       }
     } catch (error) {
       console.error("Token inválido", error);
-      localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
     }
   }, [router]);
 
@@ -59,8 +57,9 @@ export default function Login() {
       const data = await res.json();
 
       // Guardar el token
-      localStorage.setItem("token", data.token);
-
+      sessionStorage.setItem("token", data.token);
+      //Guardo el id de Usuario
+      sessionStorage.setItem("idUser",data.idUser);
       // El redireccionamiento ya lo hace el useEffect, aquí no hace falta
       router.refresh();
 
