@@ -14,7 +14,7 @@ export default function TypeCard() {
   const [mensajeEnviado, setMensajeEnviado] = useState(false);
 
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-  const concesionariaId = typeof window !== "undefined" ? localStorage.getItem("concesionariaId") : null;
+  const concesionariaId = typeof window !== "undefined" ? localStorage.getItem("idConcesionaria") : null;
 
 
   useEffect(() => {
@@ -58,7 +58,8 @@ export default function TypeCard() {
       alert("No hay imagen para enviar");
       return;
     }
-
+     console.log("TOKEN QUE ESTOY ENVIANDO:", token); // <-- AQUÍ
+  console.log("CONCESIONARIA:", concesionariaId); // ya de paso
 
     const blob = await fetch(previewImagen).then((res) => res.blob());
     const file = new File([blob], "evidencia.jpg", { type: "image/jpeg" });
@@ -69,6 +70,7 @@ export default function TypeCard() {
     formData.append("concesionaria", String(concesionariaId));
     formData.append("descripcion", descripcion);
     formData.append("imagen", file);
+    
 
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reportes`, {
@@ -109,11 +111,11 @@ export default function TypeCard() {
       <div className="chips-container">
         {opciones.map((op) => (
           <button
-            key={op.id_tipoUsuario}
-            className={`chip ${seleccionada === op.id_tipoUsuario ? "chip-selected" : ""}`}
-            onClick={() => setSeleccionada(op.id_tipoUsuario)}
+            key={op.id_tipoReporte}
+            className={`chip ${seleccionada === op.id_tipoReporte ? "chip-selected" : ""}`}
+            onClick={() => setSeleccionada(op.id_tipoReporte)}
           >
-            {op.tipoUsuario}
+            {op.tipoReporte}
           </button>
         ))}
       </div>

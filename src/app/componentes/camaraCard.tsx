@@ -20,41 +20,40 @@ export default function CameraCard() {
 
   const videoConstraints = { facingMode: "environment" };
 
-
   const tomarFoto = () => {
-    if (!webcamRef.current) return;
+    const cam = webcamRef.current;
+    if (!cam) return;
 
-    const image = webcamRef.current.getScreenshot();
+    const image = cam.getScreenshot();
     if (image) {
       setFoto(image);
-      setCapturando(false); // Detener cámara
+      setCapturando(false);
     }
   };
-
 
   const resetearFoto = () => {
     setFoto(null);
     setCapturando(false);
 
-    // Pequeño delay para que react-webcam recargue
-    setTimeout(() => setCapturando(true), 100);
+    setTimeout(() => {
+      setCapturando(true);
+    }, 150);
   };
-
 
   const enviarFoto = () => {
     if (!foto) return alert("No hay foto tomada");
 
-
-    localStorage.setItem("fotoTemporal", foto);
-
-
-    router.push("/Reportes/Type");
+    try {
+      localStorage.setItem("imagenReporte", foto);
+      router.replace("/Reportes/Type");
+    } catch (error) {
+      console.error("Error guardando la imagen:", error);
+    }
   };
 
   return (
     <div className="camera-card">
       <h2 className="camera-title">Tomar evidencia</h2>
-
 
       {capturando && (
         <>
@@ -72,8 +71,7 @@ export default function CameraCard() {
         </>
       )}
 
-      {/* Vista previa de la foto */}
-      {foto && !capturando && (
+      {!capturando && foto && (
         <div className="camera-preview">
           <img src={foto} alt="Foto tomada" className="camera-video" />
 
