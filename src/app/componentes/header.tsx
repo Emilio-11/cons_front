@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import "./estilos/header.css";
+
 
 export default function Header(){
     return(
@@ -15,9 +15,7 @@ export default function Header(){
                 />
             </Link>
             <div className="yellowPart"></div>
-            <div className="cedetecContainer">
-                
-            </div>
+            
         </header>
     )
 }

@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 import { useRouter } from "next/navigation";
-import "./estilos/qr.css";
+
 
 export default function QrCard() {
   const router = useRouter();
@@ -55,12 +55,19 @@ export default function QrCard() {
   }, [router]);
 
   return (
-    <div className="qr-wrapper">
-      <div className="qr-card">
-        <h2 className="qr-title">Escanear código QR</h2>
-        <div id="qr-reader" className="qr-reader"></div>
-        <p className="qr-subtitle">Apunta la cámara al código</p>
-      </div>
+    <div className="pagina-center">
+    <div className="contenedor-responsive">
+    <div className="card">
+
+      <h2 className="titulo">Escanear código QR</h2>
+
+      <div id="qr-reader" className="qr-area"></div>
+
+      <p className="subtitulo">Apunta la cámara al código</p>
+
     </div>
+  </div>
+</div>
+
   );
 }

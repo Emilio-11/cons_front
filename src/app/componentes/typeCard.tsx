@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import "./estilos/types.css";
+
 
 export default function TypeCard() {
   const router = useRouter();
@@ -112,45 +112,44 @@ export default function TypeCard() {
   };
 
   return (
-    <div className="card-incident">
-      <h2 className="title">Reporta un incidente</h2>
-      <p className="subtitle">
+    <div className="pagina-center">
+  <div className="contenedor-responsive contenedor-reportes">
+    <div className="card">
+
+      <h2 className="titulo">Reporta un incidente</h2>
+      <p className="subtitulo">
         Selecciona el tipo de problema y cuéntanos brevemente qué ocurrió.
       </p>
 
-
+      {/* Selector */}
       <div className="select-container">
-      <select
-        className="select-tipo"
-        value={seleccionada ?? ""}
-        onChange={(e) => setSeleccionada(Number(e.target.value))}
-      >
-        <option value="" disabled>
-          Selecciona un tipo de reporte
-        </option>
+        <select
+          className="chip" /* Puedes usar chip, chip-selected o crear select global */
+          value={seleccionada ?? ""}
+          onChange={(e) => setSeleccionada(Number(e.target.value))}
+        >
+          <option value="" disabled>Selecciona un tipo de reporte</option>
+          {opciones.map(op => (
+            <option key={op.id_tipoReporte} value={op.id_tipoReporte}>
+              {op.tipoReporte}
+            </option>
+          ))}
+        </select>
+      </div>
 
-        {opciones.map((op) => (
-          <option key={op.id_tipoReporte} value={op.id_tipoReporte}>
-            {op.tipoReporte}
-          </option>
-        ))}
-      </select>
-    </div>
-
-
-
+      {/* Preview */}
       {previewImagen && (
         <div className="img-preview">
           <img src={previewImagen} alt="preview" />
-          <button
-            className="btn-retomar"
+
+          <button 
+            className="btn btn-primario btn-pequeño"
             onClick={() => router.push("/Reportes/Camara")}
           >
             Retomar foto
           </button>
         </div>
       )}
-
 
       <textarea
         className="textarea"
@@ -159,18 +158,18 @@ export default function TypeCard() {
         onChange={(e) => setDescripcion(e.target.value)}
       ></textarea>
 
-
-      <button className="btn-submit"
-       onClick={handleSubmit}
-       disabled={loading}>
-       {loading ? (
-       <>
-      <span className="spinner"></span> Enviando reporte...
-      </>
+      <button 
+        className="btn btn-primario"
+        onClick={handleSubmit}
+        disabled={loading}
+      >
+        {loading ? (
+          <>
+            <span className="spinner"></span> Enviando reporte...
+          </>
         ) : (
-      "Enviar reporte"
-      )}
-
+          "Enviar reporte"
+        )}
       </button>
 
       {mensajeEnviado && (
@@ -179,5 +178,9 @@ export default function TypeCard() {
         </div>
       )}
     </div>
+  </div>
+</div>
+
+
   );
 }

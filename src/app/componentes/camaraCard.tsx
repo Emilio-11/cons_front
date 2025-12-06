@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { WebcamProps } from "react-webcam";
 import { useRouter } from "next/navigation";
-import "./estilos/camara.css";
+
 
 const Webcam = dynamic<WebcamProps>(
   () => import("react-webcam").then((mod) => mod.default),
@@ -52,8 +52,11 @@ export default function CameraCard() {
   };
 
   return (
-    <div className="camera-card">
-      <h2 className="camera-title">Tomar evidencia</h2>
+   <div className="pagina-center">
+  <div className="contenedor-responsive">
+    <div className="card">
+
+      <h2 className="titulo">Tomar evidencia</h2>
 
       {capturando && (
         <>
@@ -65,7 +68,7 @@ export default function CameraCard() {
             className="camera-video"
           />
 
-          <button className="camera-btn" onClick={tomarFoto}>
+          <button className="btn btn-primario" onClick={tomarFoto}>
             Tomar foto
           </button>
         </>
@@ -75,15 +78,19 @@ export default function CameraCard() {
         <div className="camera-preview">
           <img src={foto} alt="Foto tomada" className="camera-video" />
 
-          <button className="camera-delete" onClick={resetearFoto}>
+          <button className="btn btn-peligro btn-pequeño" onClick={resetearFoto}>
             Volver a tomar
           </button>
 
-          <button className="camera-btn" onClick={enviarFoto}>
+          <button className="btn btn-primario" onClick={enviarFoto}>
             Confirmar y enviar
           </button>
         </div>
       )}
+
     </div>
+  </div>
+</div>
+
   );
 }

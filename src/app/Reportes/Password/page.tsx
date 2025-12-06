@@ -1,6 +1,6 @@
 "use client";
 
-import "@/app/Reportes/Password/password.css";
+
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -54,28 +54,38 @@ export default function ContraseñaPage() {
   };
 
   return (
-    <div className="contenedor-form">
-      <h2 className="titulo-form">Creación de Contraseña</h2>
-        <p className="subtitulo-form">Esta acción solo se realizará una vez</p>
+    <div className="pagina-center">
+  <div className="contenedor-responsive">
+    <div className="card">
 
-          <input
-            className="textarea"
-            placeholder="Ingrese una contraseña"
-            value={Contraseña}
-            onChange={(e) => setContraseña(e.target.value)}
-          />
-          <input
-            className="textarea"
-            placeholder="Confirme su contraseña"
-            value={ContraseñaN}
-            onChange={(e) => setContraseñaN(e.target.value)}
-          />
-          {error && <p className="error">{error}</p>}
+      <h2 className="titulo">Creación de Contraseña</h2>
+      <p className="subtitulo">Esta acción solo se realizará una vez</p>
 
-          <button className="btn-submit" onClick={handleSetPassword} disabled={loading}>
-            {loading ? "Cargando..." : "Confirmar contraseña"}
-          </button>
+      <input
+        placeholder="Ingrese una contraseña"
+        value={Contraseña}
+        onChange={(e) => setContraseña(e.target.value)}
+      />
+
+      <input
+        placeholder="Confirme su contraseña"
+        value={ContraseñaN}
+        onChange={(e) => setContraseñaN(e.target.value)}
+      />
+
+      {error && <p className="error">{error}</p>}
+
+      <button
+        className="btn btn-primario"
+        onClick={handleSetPassword}
+        disabled={loading}
+      >
+        {loading ? "Cargando..." : "Confirmar contraseña"}
+      </button>
+
     </div>
+  </div>
+</div>
 
   );
 }
