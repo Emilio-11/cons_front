@@ -16,17 +16,19 @@ export default function TypeCard() {
   const token = typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
   const concesionariaId = typeof window !== "undefined" ? localStorage.getItem("idConcesionaria") : null;
   const usuarioId = typeof window !== "undefined" ? sessionStorage.getItem("idUser") : null;
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchTipos = async () => {
       try {
+        console.log("Token en fetchTipos:", token); // <-- AQUÍ
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reportes/tipos`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         });
-        console.log("Token en fetchTipos:", token); // <-- AQUÍ
+        
 
         const data = await res.json();
         console.log("🔍 DATA RECIBIDA DESDE BACK:", data);
@@ -42,12 +44,14 @@ export default function TypeCard() {
 
 
   useEffect(() => {
+    
     const img = localStorage.getItem("imagenReporte");
     if (img) setPreviewImagen(img);
   }, []);
 
 
   const handleSubmit = async () => {
+    if(loading)return; 
     if (!seleccionada) {
       alert("Debes seleccionar un tipo de reporte");
       return;
@@ -62,6 +66,7 @@ export default function TypeCard() {
       alert("No hay imagen para enviar");
       return;
     }
+    setLoading(true);
      console.log("TOKEN QUE ESTOY ENVIANDO:", token); // <-- AQUÍ
   console.log("CONCESIONARIA:", concesionariaId); // ya de paso
 
@@ -95,13 +100,14 @@ export default function TypeCard() {
 
       // limpiar
       localStorage.removeItem("imagenReporte");
-
+      
       setTimeout(() => {
         router.push("/");
       }, 2000);
     } catch (err) {
       alert("Error al enviar reporte");
       console.error(err);
+      setLoading(false);
     }
   };
 
@@ -113,17 +119,24 @@ export default function TypeCard() {
       </p>
 
 
-      <div className="chips-container">
+      <div className="select-container">
+      <select
+        className="select-tipo"
+        value={seleccionada ?? ""}
+        onChange={(e) => setSeleccionada(Number(e.target.value))}
+      >
+        <option value="" disabled>
+          Selecciona un tipo de reporte
+        </option>
+
         {opciones.map((op) => (
-          <button
-            key={op.id_tipoReporte}
-            className={`chip ${seleccionada === op.id_tipoReporte ? "chip-selected" : ""}`}
-            onClick={() => setSeleccionada(op.id_tipoReporte)}
-          >
+          <option key={op.id_tipoReporte} value={op.id_tipoReporte}>
             {op.tipoReporte}
-          </button>
+          </option>
         ))}
-      </div>
+      </select>
+    </div>
+
 
 
       {previewImagen && (
@@ -147,8 +160,17 @@ export default function TypeCard() {
       ></textarea>
 
 
-      <button className="btn-submit" onClick={handleSubmit}>
-        Enviar reporte
+      <button className="btn-submit"
+       onClick={handleSubmit}
+       disabled={loading}>
+       {loading ? (
+       <>
+      <span className="spinner"></span> Enviando reporte...
+      </>
+        ) : (
+      "Enviar reporte"
+      )}
+
       </button>
 
       {mensajeEnviado && (

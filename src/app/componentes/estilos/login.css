@@ -2,6 +2,7 @@
 .contenedor-login {
   display: flex;
   justify-content: center;
+  margin-top: auto;
   align-items: center;
   min-height: 100vh;
   padding: 20px;
@@ -24,7 +25,7 @@
 
 /* Caja principal */
 .caja-login {
-  margin-top: -250px;
+  margin-top: 0%;
   background: #ffffff;
   padding: 28px 22px;
   border-radius: 16px;
@@ -41,12 +42,47 @@
 .titulo-login {
   text-align: center;
   color: #b8860b;
-  font-size: 26px;
+  font-size: 50px;
   font-weight: 700;
   line-height: 1.1;
   margin-bottom: 10px;
 }
+.contenedor-login .Usuario {
+  color: black;
+  text-align: left;
+  width: 100%;
+  font-size: 20px;
+}
+.contenedor-login .Password {
+  color:black;
+  text-align: left;
+  width: 100%;
+  font-size: 20px;
+}
+/* Input de correo */
+.contenedor-login .cuadro1 {
+  width: 98%;             /* Ocupa todo el ancho del contenedor */
+  padding: 5px;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
 
+/* Input de contraseña */
+.contenedor-login .cuadro2 {
+  width: 98%;             /* Ocupa todo el ancho del contenedor */
+  padding: 5px;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+.btn-submit{
+  background: linear-gradient(90deg, #003d79, #003d79);
+    border: none;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    color: rgb(255, 255, 255);
+}
 /* Botón Google */
 .google-btn {
   width: 100%;
@@ -67,6 +103,7 @@
 .google-btn img {
   width: 22px;
   height: 22px;
+  
 }
 
 .google-btn:hover {
@@ -77,6 +114,7 @@
 .login {
   width: 100%;
 }
+
 
 .login input {
   width: 100%;
@@ -100,6 +138,7 @@
   .caja-login {
     padding: 22px 18px;
     border-radius: 14px;
+    margin-top: 5px !important
   }
 
   .titulo-login {

@@ -17,7 +17,7 @@ export default function OAuthCallback() {
         }
 
         // 1. Guardar token
-        localStorage.setItem("token", token);
+        sessionStorage.setItem("token", token);
 
         // 2. Leer payload del JWT
         try {

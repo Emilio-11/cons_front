@@ -55,22 +55,27 @@ export default function ContraseñaPage() {
 
   return (
     <div className="contenedor-form">
-      <input
-        className="textarea"
-        placeholder="Ingrese una contraseña"
-        value={Contraseña}
-        onChange={(e) => setContraseña(e.target.value)}
-      />
-      <input
-        className="textarea"
-        placeholder="Confirme su contraseña"
-        value={ContraseñaN}
-        onChange={(e) => setContraseñaN(e.target.value)}
-      />
-      {error && <p className="error">{error}</p>}
-      <button className="btn-submit" onClick={handleSetPassword} disabled={loading}>
-        {loading ? "Cargando..." : "Confirmar contraseña"}
-      </button>
+      <h2 className="titulo-form">Creación de Contraseña</h2>
+        <p className="subtitulo-form">Esta acción solo se realizará una vez</p>
+
+          <input
+            className="textarea"
+            placeholder="Ingrese una contraseña"
+            value={Contraseña}
+            onChange={(e) => setContraseña(e.target.value)}
+          />
+          <input
+            className="textarea"
+            placeholder="Confirme su contraseña"
+            value={ContraseñaN}
+            onChange={(e) => setContraseñaN(e.target.value)}
+          />
+          {error && <p className="error">{error}</p>}
+
+          <button className="btn-submit" onClick={handleSetPassword} disabled={loading}>
+            {loading ? "Cargando..." : "Confirmar contraseña"}
+          </button>
     </div>
+
   );
 }

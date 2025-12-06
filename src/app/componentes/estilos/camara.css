@@ -37,18 +37,18 @@
 .camera-btn {
     width: 100%;
     padding: 12px;
-    background: #b8860b;
-    color: white;
+    background: linear-gradient(90deg, #003d79, #003d79);
     border: none;
     border-radius: 12px;
+    font-weight: bold;
+    font-size: 15px;
     cursor: pointer;
-    font-size: 17px;
-    font-weight: 500;
+    color: rgb(255, 255, 255);
     transition: 0.2s ease;
 }
 
 .camera-btn:hover {
-    background: #916f09;
+    color: #004aad;
 }
 
 .camera-preview {

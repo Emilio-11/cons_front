@@ -11,6 +11,7 @@
 /* Card principal */
 .card-incident {
     width: 350px;
+    margin-top: 25%;
     background: #ffffff;
     padding: 20px;
     border-radius: 16px;
@@ -36,54 +37,41 @@
     text-align: center;
 }
 
-.chips-container {
+
+.select-container{
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 15px;
-    justify-content: center; /* centra los chips */
+    flex-direction: column;
+    
 }
-
-.chip {
-    padding: 6px 12px;
-    background: #0059c9;
-    border: none;
-    border-radius: 20px;
-    color: #ffffff;
-    font-size: 13px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.chip:hover {
-    transform: scale(1.05);
-}
-
-.chip-selected {
-    background: #003f8d;   /* azul más oscuro al estar seleccionado */
-    color: #ffffff;
-    transform: scale(1.05);
-    box-shadow: 0 0 8px rgba(0,0,0,0.3);
-}
-
 .textarea {
-    width: 90%;
-    height: 100px;
-    background: #0059c9;
-    border: none;
-    border-radius: 12px;
-    padding: 10px;
-    color: #ffffff;
-    resize: none;
-    margin-bottom: 20px;
+  width: 89%;
+  margin-top: 0.2cm;
+  padding:  18px;
+  border: 2px solid #d1d5db;
+  border-radius: 5px;
+  font-size: 18px;
+  outline: none;
+  transition: all 0.3s ease;
+  background: #f9fafb;
+   font: 1em sans-serif;
+  
 }
 
 .textarea::placeholder {
-    color: #cccccc;
+    color: black;
+    font: 1em sans-serif;
+    font-size: medium;
+    text-align: left;
 }
 
+.img-preview img{
+width: 100%;
+margin-top: 0.5cm;
+border-radius: 5%;
+}
 .btn-submit {
     width: 100%;
+    margin-top: 0.2cm;
     padding: 12px;
     background: linear-gradient(90deg, #003d79, #003d79);
     border: none;
@@ -95,8 +83,45 @@
 }
 
 .btn-submit:hover {
-    opacity: 0.9;
+    width: 100%;
+    margin-top: 0.2cm;
+    padding: 12px;
+   
+    border: none;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    color: #004aad;
 }
+.btn-retomar{
+    width: 40%;
+    color: rgb(255, 255, 255);
+    background-color: #004aad;
+     background: linear-gradient(90deg, #003d79, #003d79);
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 15px;
+    padding: 5px;
+}
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 3px solid #ccc;
+  border-top-color: #444;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 
 /* Modal de confirmación */
 .modal-enviado {

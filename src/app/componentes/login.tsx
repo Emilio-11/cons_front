@@ -10,6 +10,7 @@ export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
 
   useEffect(() => {
@@ -38,6 +39,8 @@ export default function Login() {
   };
 
   const handleSubmit = async () => {
+    if (loading) return;
+    setLoading(true);
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
         method: "POST",
@@ -51,17 +54,18 @@ export default function Login() {
       if (!res.ok) {
         const errorData = await res.json();
         alert(errorData.message || "Error en el login");
+         setLoading(false);
         return;
       }
 
       const data = await res.json();
 
       // Guardar el token
-      sessionStorage.setItem("token", data.token);
+      sessionStorage.setItem("token", data.access_token);
       //Guardo el id de Usuario
       sessionStorage.setItem("idUser",data.idUser);
       // El redireccionamiento ya lo hace el useEffect, aquí no hace falta
-      router.refresh();
+      router.push("/Reportes/QR");
 
     } catch (error) {
       console.error(error);
@@ -74,10 +78,11 @@ export default function Login() {
     <div className="contenedor-login">
       <div className="caja-login">
 
-        <h2 className="titulo-login">Reportes Concesionaria FES</h2>
+        <h2 className="titulo-login">S.I.D.E.C</h2>
 
-        <label htmlFor="usuario">Usuario</label>
+        <label className="Usuario" htmlFor="usuario">Correo Electrónico</label>
         <input
+         className="cuadro1"
           type="text"
           id="usuario"
           placeholder="Coloca tu correo electrónico"
@@ -85,8 +90,9 @@ export default function Login() {
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        <label htmlFor="password">Contraseña</label>
+        <label className="Password" htmlFor="password">Contraseña</label>
         <input
+          className="cuadro2"
           type="password"
           id="password"
           placeholder="Coloca tu contraseña"
