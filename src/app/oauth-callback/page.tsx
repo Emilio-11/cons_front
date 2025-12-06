@@ -27,7 +27,7 @@ export default function OAuthCallback() {
             if (payload.tipo === "Administrador") {
                 router.replace("/Admin/Dashboard");
             } else {
-                router.replace("/Reportes/QR");
+                router.replace("/Reportes/Menu");
             }
         } catch (error) {
             console.error("Error decoding token:", error);

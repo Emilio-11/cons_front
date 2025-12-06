@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-
 export default function TypeCard() {
   const router = useRouter();
 
@@ -12,28 +11,31 @@ export default function TypeCard() {
   const [descripcion, setDescripcion] = useState("");
   const [previewImagen, setPreviewImagen] = useState<string | null>(null);
   const [mensajeEnviado, setMensajeEnviado] = useState(false);
-
-  const token = typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
-  const concesionariaId = typeof window !== "undefined" ? localStorage.getItem("idConcesionaria") : null;
-  const usuarioId = typeof window !== "undefined" ? sessionStorage.getItem("idUser") : null;
   const [loading, setLoading] = useState(false);
 
+  const token =
+    typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
+  const concesionariaId =
+    typeof window !== "undefined" ? localStorage.getItem("idConcesionaria") : null;
+  const usuarioId =
+    typeof window !== "undefined" ? sessionStorage.getItem("idUser") : null;
+
+  // --- Obtener tipos ---
   useEffect(() => {
     const fetchTipos = async () => {
       try {
-        console.log("Token en fetchTipos:", token); // <-- AQUÍ
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reportes/tipos`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/reportes/tipos`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         const data = await res.json();
-        console.log("🔍 DATA RECIBIDA DESDE BACK:", data);
-    console.log("🟦 ES ARRAY?:", Array.isArray(data));
-        setOpciones(data); // [{id_tipoUsuario, tipoUsuario}]
+        setOpciones(data);
       } catch (err) {
         console.error("Error obteniendo tipos:", err);
       }
@@ -42,16 +44,16 @@ export default function TypeCard() {
     if (token) fetchTipos();
   }, [token]);
 
-
+  // --- Cargar imagen temporal ---
   useEffect(() => {
-    
     const img = localStorage.getItem("imagenReporte");
     if (img) setPreviewImagen(img);
   }, []);
 
-
+  // --- ENVIAR REPORTE ---
   const handleSubmit = async () => {
-    if(loading)return; 
+    if (loading) return;
+
     if (!seleccionada) {
       alert("Debes seleccionar un tipo de reporte");
       return;
@@ -66,9 +68,8 @@ export default function TypeCard() {
       alert("No hay imagen para enviar");
       return;
     }
+
     setLoading(true);
-     console.log("TOKEN QUE ESTOY ENVIANDO:", token); // <-- AQUÍ
-  console.log("CONCESIONARIA:", concesionariaId); // ya de paso
 
     const blob = await fetch(previewImagen).then((res) => res.blob());
     const file = new File([blob], "evidencia.jpg", { type: "image/jpeg" });
@@ -80,7 +81,7 @@ export default function TypeCard() {
     formData.append("descripcion", descripcion);
     formData.append("imagen", file);
     formData.append("fecha", new Date().toISOString());
-    formData.append("usuarioId", String(usuarioId)); 
+    formData.append("usuarioId", String(usuarioId));
 
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reportes`, {
@@ -93,17 +94,19 @@ export default function TypeCard() {
 
       if (!res.ok) {
         alert("Error al enviar el reporte");
+        setLoading(false);
         return;
       }
 
+      // Mostrar mensaje ANTES de redirigir
       setMensajeEnviado(true);
 
-      // limpiar
+      // Limpiar
       localStorage.removeItem("imagenReporte");
-      
+
       setTimeout(() => {
-        router.push("/");
-      }, 2000);
+        router.push("/Reportes/Menu");
+      }, 4000);
     } catch (err) {
       alert("Error al enviar reporte");
       console.error(err);
@@ -113,74 +116,73 @@ export default function TypeCard() {
 
   return (
     <div className="pagina-center">
-  <div className="contenedor-responsive contenedor-reportes">
-    <div className="card">
+      <div className="contenedor-responsive contenedor-reportes">
+        <div className="card">
+          <h2 className="titulo">Reporta un incidente</h2>
+          <p className="subtitulo">
+            Selecciona el tipo de problema y cuéntanos brevemente qué ocurrió.
+          </p>
 
-      <h2 className="titulo">Reporta un incidente</h2>
-      <p className="subtitulo">
-        Selecciona el tipo de problema y cuéntanos brevemente qué ocurrió.
-      </p>
+          {/* Selector */}
+          <div className="select-container">
+            <select
+              className="chip"
+              value={seleccionada ?? ""}
+              onChange={(e) => setSeleccionada(Number(e.target.value))}
+            >
+              <option value="" disabled>
+                Selecciona un tipo de reporte
+              </option>
+              {opciones.map((op) => (
+                <option key={op.id_tipoReporte} value={op.id_tipoReporte}>
+                  {op.tipoReporte}
+                </option>
+              ))}
+            </select>
+          </div>
 
-      {/* Selector */}
-      <div className="select-container">
-        <select
-          className="chip" /* Puedes usar chip, chip-selected o crear select global */
-          value={seleccionada ?? ""}
-          onChange={(e) => setSeleccionada(Number(e.target.value))}
-        >
-          <option value="" disabled>Selecciona un tipo de reporte</option>
-          {opciones.map(op => (
-            <option key={op.id_tipoReporte} value={op.id_tipoReporte}>
-              {op.tipoReporte}
-            </option>
-          ))}
-        </select>
-      </div>
+          {/* Imagen */}
+          {previewImagen && (
+            <div className="img-preview">
+              <img src={previewImagen} alt="preview" />
+              <button
+                className="btn btn-primario btn-pequeño"
+                onClick={() => router.push("/Reportes/Camara")}
+              >
+                Retomar foto
+              </button>
+            </div>
+          )}
 
-      {/* Preview */}
-      {previewImagen && (
-        <div className="img-preview">
-          <img src={previewImagen} alt="preview" />
+          <textarea
+            className="textarea"
+            placeholder="Ejemplo: Encontré comida en mal estado..."
+            value={descripcion}
+            onChange={(e) => setDescripcion(e.target.value)}
+          ></textarea>
 
-          <button 
-            className="btn btn-primario btn-pequeño"
-            onClick={() => router.push("/Reportes/Camara")}
+          <button
+            className="btn btn-primario"
+            onClick={handleSubmit}
+            disabled={loading}
           >
-            Retomar foto
+            {loading ? (
+              <>
+                <span className="spinner"></span> Enviando reporte...
+              </>
+            ) : (
+              "Enviar reporte"
+            )}
           </button>
+
+          {/* Mensaje de confirmación */}
+          {mensajeEnviado && (
+            <div className="modal-enviado">
+              <p>✅ Reporte enviado correctamente</p>
+            </div>
+          )}
         </div>
-      )}
-
-      <textarea
-        className="textarea"
-        placeholder="Ejemplo: Encontré comida en mal estado..."
-        value={descripcion}
-        onChange={(e) => setDescripcion(e.target.value)}
-      ></textarea>
-
-      <button 
-        className="btn btn-primario"
-        onClick={handleSubmit}
-        disabled={loading}
-      >
-        {loading ? (
-          <>
-            <span className="spinner"></span> Enviando reporte...
-          </>
-        ) : (
-          "Enviar reporte"
-        )}
-      </button>
-
-      {mensajeEnviado && (
-        <div className="modal-enviado">
-          <p>✅ Reporte enviado correctamente</p>
-        </div>
-      )}
+      </div>
     </div>
-  </div>
-</div>
-
-
   );
 }

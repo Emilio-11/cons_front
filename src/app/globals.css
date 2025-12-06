@@ -338,16 +338,113 @@ html, body {
   min-height: 100vh;
   background-color: var(--color-bg);
   display: flex;
-  justify-content: flex-start; /* antes estaba center */
-  align-items: center;
-  padding: 16px;
-   /* evita chocar con el header */
+  flex-direction: column;   
+  justify-content: flex-start;
+  align-items: center;     
+  padding-top: 40px;
 }
 .contenedor-responsive.contenedor-reportes {
-  margin-top: 220px; /* ajusta según tu header */
+  margin-top: 220px;
+ gap: 100px; /* ajusta según tu header */
+}
+.contenedor-responsive.contenedor-menu{
+  margin-top: 10px;
+  padding: 12px;
+
+}
+/* CONTENEDOR DE TÍTULO */
+.titulo-contenedor {
+  text-align: center;
+  margin-bottom: 40px; /* espacio entre título y cards */
+
 }
 
+.titulo.menu-card {
+  font-size: 2.5rem; /* grande y destacado */
+  color: var(--color-primario);
+  font-weight: bold;
+  justify-content: center;
+ 
+}
 
+.titulo-contenedor .subtitulo {
+  font-size: var(--font-lg);
+  color: A#555;
+  opacity: 0.9;
+  margin-top: 8px;
+  justify-content: center;
+}
+
+/* CONTENEDOR DE LAS CARDS */
+.cards-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 40px; /* separación lateral entre cards */
+  flex-wrap: nowrap; /* por defecto en PC */
+  margin: 0 auto;
+  width: 150%;
+  margin-left: -25%;    /* tamaño solo desktop */
+  height: 110%
+}
+
+/* CARDS */
+.card-hover {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  max-width: 420px; /* mantiene tamaño fijo */
+}
+
+.card-hover .card-img {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  
+  border-radius: 12px;
+  transition: opacity 0.25s ease;
+}
+
+.card-hover .card-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-lg);
+  font-weight: bold;
+  color: var(--color-primario);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.card-hover:hover .card-img {
+  opacity: 0;
+}
+
+.card-hover:hover .card-text {
+  opacity: 1;
+}
+.card-img{
+  max-width: 80%;
+  height: auto;
+  
+  display: block;      /* importante para centrarse con margin auto */
+  margin: 0 auto;
+}
+
+/* RESPONSIVO PARA MÓVILES */
+@media (max-width: 768px) {
+  .cards-wrapper {
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    transform: scale(1.0);
+  }
+
+  .card-hover {
+    margin-bottom: 16px; /* separación vertical */
+  }
+}
 
 
 
@@ -584,9 +681,6 @@ img {
 }
 
 
-
-
-
 .yellowPart {
     position: absolute;
     content: "";
@@ -603,8 +697,48 @@ img {
 
 
 
+/* === 1. Fondo global uniforme === */
+html, body {
+  height: 100%;
+  background-color: var(--color-bg) !important; /* Tu color #f3f3f3 */
+}
 
 
+/* === 2. Unificar contenedores que tenían otros tonos === */
+.container,
+.information,
+.toggleSection,
+.toggleGroup {
+  background-color: var(--color-bg) !important;
+}
+
+/* Inputs, textareas y cards siguen siendo blancos, NO se modifica nada visual */
+.card,
+input,
+textarea {
+  background-color: #ffffff !important;
+}
 
 
+/* === 3. Corregir tus degradados que metían colores distintos === */
 
+.img::after {
+  background: linear-gradient(to right, var(--color-bg), transparent) !important;
+}
+
+@media (max-width: 900px) {
+  .img::before {
+    background: linear-gradient(to right, var(--color-bg), transparent) !important;
+  }
+
+  .img::after {
+    background: linear-gradient(to left, var(--color-bg), transparent) !important;
+  }
+}
+
+
+/* === 4. Evitar parches de fondo en capas internas === */
+main, 
+.pagina-center {
+  background-color: var(--color-bg) !important;
+}

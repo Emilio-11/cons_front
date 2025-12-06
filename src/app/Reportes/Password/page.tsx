@@ -44,7 +44,7 @@ export default function ContraseñaPage() {
       sessionStorage.setItem("token", token);
       window.dispatchEvent(new Event("tokenChanged"));
 
-      router.push("/Reportes/QR");
+      router.push("/Reportes/Menu");
     } catch (err: any) {
       console.error(err);
       setError(err.response?.data?.message || "Error al establecer la contraseña");

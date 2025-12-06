@@ -65,7 +65,7 @@ export default function Login() {
       //Guardo el id de Usuario
       sessionStorage.setItem("idUser",data.idUser);
       // El redireccionamiento ya lo hace el useEffect, aquí no hace falta
-      router.push("/Reportes/QR");
+      router.push("/Reportes/Menu");
 
     } catch (error) {
       console.error(error);
