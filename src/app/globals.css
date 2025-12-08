@@ -316,5 +316,429 @@ form {
 }
 html, body {
     height: 100%;
-    overflow: hidden;
+    overflow:  auto;
+}
+/*CSS GLOBALES DE COMPONENTES*/
+:root{
+  --color-primario: #003d79;
+  --color-secundario: #b8860b;
+  --color-bg: #f3f3f3;
+  --card-max-width: 420px;
+  --padding-card: 20px;
+  --radius-card: 16px;
+  --sombra: 0 4px 14px rgba(0, 0, 0, 0.12);
+
+  --font-xl: 1.8rem;
+  --font-lg: 1.3rem;
+  --font-md: 1rem;
+  --font-sm: 0.9rem;
+}
+/*Contenedores*/
+.pagina-center{
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  display: flex;
+  flex-direction: column;   
+  justify-content: flex-start;
+  align-items: center;     
+  padding-top: 40px;
+}
+.contenedor-responsive.contenedor-reportes {
+  margin-top: 220px;
+ gap: 100px; /* ajusta según tu header */
+}
+.contenedor-responsive.contenedor-menu{
+  margin-top: 10px;
+  padding: 12px;
+
+}
+/* CONTENEDOR DE TÍTULO */
+.titulo-contenedor {
+  text-align: center;
+  margin-bottom: 40px; /* espacio entre título y cards */
+
+}
+
+.titulo.menu-card {
+  font-size: 2.5rem; /* grande y destacado */
+  color: var(--color-primario);
+  font-weight: bold;
+  justify-content: center;
+ 
+}
+
+.titulo-contenedor .subtitulo {
+  font-size: var(--font-lg);
+  color: A#555;
+  opacity: 0.9;
+  margin-top: 8px;
+  justify-content: center;
+}
+
+/* CONTENEDOR DE LAS CARDS */
+.cards-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 40px; /* separación lateral entre cards */
+  flex-wrap: nowrap; /* por defecto en PC */
+  margin: 0 auto;
+  width: 150%;
+  margin-left: -25%;    /* tamaño solo desktop */
+  height: 110%
+}
+
+/* CARDS */
+.card-hover {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  max-width: 420px; /* mantiene tamaño fijo */
+}
+
+.card-hover .card-img {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  
+  border-radius: 12px;
+  transition: opacity 0.25s ease;
+}
+
+.card-hover .card-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-lg);
+  font-weight: bold;
+  color: var(--color-primario);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.card-hover:hover .card-img {
+  opacity: 0;
+}
+
+.card-hover:hover .card-text {
+  opacity: 1;
+}
+.card-img{
+  max-width: 80%;
+  height: auto;
+  
+  display: block;      /* importante para centrarse con margin auto */
+  margin: 0 auto;
+}
+
+/* RESPONSIVO PARA MÓVILES */
+@media (max-width: 768px) {
+  .cards-wrapper {
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    transform: scale(1.0);
+  }
+
+  .card-hover {
+    margin-bottom: 16px; /* separación vertical */
+  }
+}
+
+
+
+.contenedor-responsive{
+  width: 100%;
+  max-width: var(--card-max-width);
+  margin: auto;
+}
+
+.card{
+  background: #ffffff;
+  width: 100%;
+  padding: var(--padding-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--sombra);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+
+.titulo{
+  font-size: var(--font-xl);
+  color: var(--color-secundario);
+  font-weight: bold;
+  text-align: center;
+}
+.subtitulo{
+  font-size: var(--font-md);
+  color: #333;
+  text-align: center;
+  opacity: 0.9;
+}
+
+input, 
+textarea{
+width: 90%;
+padding: 12px;
+border-radius: 10px;
+border: 1px solid #ccc;
+background: #fafafa;
+font-size:var(--font-md);
+outline: none;
+transition: 0.2s;
+}
+input:focus,
+textarea:focus{
+  border-color:var(--color-secundario);
+  box-shadow: 0 0 0 2px rgba(184,134,11,0.2);
+}
+textarea{
+  resize: none;
+  min-height: 90px;
+}
+
+.btn{
+    width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: var(--font-md);
+  font-weight: bold;
+  transition: 0.25s ease;
+}
+.btn-primario {
+  background: var(--color-primario);
+  color: white;
+}
+
+.btn-primario:hover {
+  filter: brightness(1.15);
+}
+.btn-peligro {
+  background: #d62828;
+  color: white;
+}
+
+.btn-peligro:hover {
+  background: #b21d1d;
+}
+
+.btn-pequeño {
+  width: auto;
+  padding: 8px 14px;
+  border-radius: 8px;
+}
+
+/* -------------------------- */
+/* IMÁGENES                   */
+/* -------------------------- */
+
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+/* Vista de foto */
+.img-preview {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+/* -------------------------- */
+/* CHIP SELECTOR ULTRA       */
+/* -------------------------- */
+
+.chips-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chip {
+  padding: 12px;
+  width: 100%;
+  background: #eee;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: var(--font-md);
+  transition: 0.2s;
+}
+
+.chip-selected {
+  background: var(--color-secundario);
+  color: white;
+}
+
+
+.spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid rgba(255, 255, 255, 0.3); /* borde suave */
+  border-top-color: #ffffff; /* ahora sí, blanco real */
+  border-radius: 50%;
+  animation: girar 0.6s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+}
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 24px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.4);
+  z-index: 999;
+  text-align: center;
+  color: var(--color-primario);
+  font-size: var(--font-lg);
+}
+/* Área del lector QR */
+.qr-area {
+  width: 100%;
+  aspect-ratio: 1;
+  background: #000;
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Ajustes internos del plugin del QR */
+#qr-reader__scan_region,
+#qr-reader__camera_permission_button,
+#qr-reader__dashboard_section_csr {
+  background: transparent !important;
+}
+
+#qr-reader video {
+  object-fit: cover !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+#qr-reader__scan_region > div {
+  background: transparent !important;
+}
+/* Área del video/cámara */
+.camera-video {
+  width: 100%;
+  border-radius: 14px;
+  background: #000;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+}
+
+/* Contenedor de la vista previa */
+.camera-preview {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+}
+
+
+
+
+@media (max-width: 480px) {
+  .card {
+    padding: 16px;
+  }
+
+  .titulo {
+    font-size: 1.4rem;
+  }
+
+  button,
+  input,
+  textarea {
+    font-size: var(--font-sm);
+  }
+}
+.logo {
+    position: relative;
+    filter: invert(1);
+    z-index: 3;
+}
+
+
+.yellowPart {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: -20px;
+    width: 100%;
+    height: 50%;
+    min-width: 300px;
+    background-color: #d59f0f;
+    transform: skew(-45deg);
+    z-index: 0;
+}
+
+
+
+
+/* === 1. Fondo global uniforme === */
+html, body {
+  height: 100%;
+  background-color: var(--color-bg) !important; /* Tu color #f3f3f3 */
+}
+
+
+/* === 2. Unificar contenedores que tenían otros tonos === */
+.container,
+.information,
+.toggleSection,
+.toggleGroup {
+  background-color: var(--color-bg) !important;
+}
+
+/* Inputs, textareas y cards siguen siendo blancos, NO se modifica nada visual */
+.card,
+input,
+textarea {
+  background-color: #ffffff !important;
+}
+
+
+/* === 3. Corregir tus degradados que metían colores distintos === */
+
+.img::after {
+  background: linear-gradient(to right, var(--color-bg), transparent) !important;
+}
+
+@media (max-width: 900px) {
+  .img::before {
+    background: linear-gradient(to right, var(--color-bg), transparent) !important;
+  }
+
+  .img::after {
+    background: linear-gradient(to left, var(--color-bg), transparent) !important;
+  }
+}
+
+
+/* === 4. Evitar parches de fondo en capas internas === */
+main, 
+.pagina-center {
+  background-color: var(--color-bg) !important;
 }

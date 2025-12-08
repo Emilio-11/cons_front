@@ -1,22 +1,20 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import "./estilos/login.css";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
-import "./estilos/login.css";
+
 
 export default function Login() {
-  "use client";
-
 
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     if (!token) return;
 
     try {
@@ -30,7 +28,7 @@ export default function Login() {
       }
     } catch (error) {
       console.error("Token inválido", error);
-      localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
     }
   }, [router]);
 
@@ -41,6 +39,8 @@ export default function Login() {
   };
 
   const handleSubmit = async () => {
+    if (loading) return;
+    setLoading(true);
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
         method: "POST",
@@ -54,16 +54,18 @@ export default function Login() {
       if (!res.ok) {
         const errorData = await res.json();
         alert(errorData.message || "Error en el login");
+         setLoading(false);
         return;
       }
 
       const data = await res.json();
 
       // Guardar el token
-      localStorage.setItem("token", data.token);
-
+      sessionStorage.setItem("token", data.access_token);
+      //Guardo el id de Usuario
+      sessionStorage.setItem("idUser",data.idUser);
       // El redireccionamiento ya lo hace el useEffect, aquí no hace falta
-      router.refresh();
+      router.push("/Reportes/Menu");
 
     } catch (error) {
       console.error(error);
@@ -73,56 +75,64 @@ export default function Login() {
 
 
   return (
-    <div className="contenedor-login">
-      <div className="caja-login">
+    <div className="pagina-center">
+  <div className="contenedor-responsive">
+    
+    <div className="card">
+      <h2 className="titulo">S.I.D.E.C</h2>
 
-        <h2 className="titulo-login">Reportes Concesionaria FES</h2>
-
-        <label htmlFor="usuario">Usuario</label>
+      <div className="containerInput">
+        <label className="label" htmlFor="usuario">Correo Electrónico</label>
         <input
-          type="text"
           id="usuario"
+          type="text"
           placeholder="Coloca tu correo electrónico"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+      </div>
 
-        <label htmlFor="password">Contraseña</label>
+      <div className="containerInput">
+        <label className="label" htmlFor="password">Contraseña</label>
         <input
-          type="password"
           id="password"
+          type="password"
           placeholder="Coloca tu contraseña"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-
-        {/* Botón normal de login */}
-        <button className="btn-submit" onClick={handleSubmit}>
-          Iniciar sesión
-        </button>
-
-        {/* ADIVISIÓN */}
-        <div className="division">
-          <span></span>
-          <p>o</p>
-          <span></span>
-        </div>
-
-        {/* BOTÓN DE GOOGLE */}
-        <button className="google-btn" onClick={handleGoogleLogin}>
-          <img
-            src="https://www.svgrepo.com/show/475656/google-color.svg"
-            alt="Google"
-          />
-          Iniciar sesión con Google
-        </button>
-
-        <p className="registro-text">
-          ¿No estás registrado? <a href="#">Regístrate con Google</a>
-        </p>
-
       </div>
+
+      <button className="btn btn-primario" onClick={handleSubmit}>
+        Iniciar sesión
+      </button>
+
+      {/* Separador */}
+      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <span style={{ flex: 1, height: "1px", background: "#ccc" }}></span>
+        <p style={{ margin: 0 }}>o</p>
+        <span style={{ flex: 1, height: "1px", background: "#ccc" }}></span>
+      </div>
+
+      {/* Botón GOOGLE */}
+      <button className="btn" style={{ background: "white", border: "1px solid #ccc" }} onClick={handleGoogleLogin}>
+        <img
+          src="https://www.svgrepo.com/show/475656/google-color.svg"
+          alt="Google"
+          style={{ width: "22px", marginRight: "10px" }}
+        />
+        Iniciar sesión con Google
+      </button>
+
+      <p className="subtitulo">
+        ¿No estás registrado? <a href="#">Regístrate con Google</a>
+      </p>
     </div>
+
+  </div>
+</div>
+
+
   );
 
 }

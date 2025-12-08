@@ -1,7 +1,9 @@
+import DescargarQR from "../descargar_qr/page";
+
 export default function ReportesPage() {
     return (
         <div>
-            <h1>Página de Reportes</h1>
+            <DescargarQR></DescargarQR>
         </div>
     )
 }

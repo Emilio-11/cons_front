@@ -1,26 +1,25 @@
 "use client";
 
-import "@/app/Reportes/Password/password.css";
+
 import axios from "axios";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function ContraseñaPage() {
-
-  const [Contraseña, setContraseña] = useState<string>("");
-  const [ContraseñaN, setContraseñaN] = useState<string>("");
+  const router = useRouter();
+  const [Contraseña, setContraseña] = useState("");
+  const [ContraseñaN, setContraseñaN] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const emailParam = params.get("email");
     if (emailParam) setEmail(emailParam);
   }, []);
-
-
 
   const handleSetPassword = async () => {
     if (!Contraseña || !ContraseñaN) {
@@ -33,7 +32,7 @@ export default function ContraseñaPage() {
     }
 
     setLoading(true);
-    setError("");
+    setError(null);
 
     try {
       const response = await axios.post(`${apiUrl}/auth/set-password`, {
@@ -42,44 +41,51 @@ export default function ContraseñaPage() {
       });
 
       const token = response.data.access_token;
-      localStorage.setItem("token", token);
+      sessionStorage.setItem("token", token);
       window.dispatchEvent(new Event("tokenChanged"));
 
-      router.push("/Reportes/QR");
+      router.push("/Reportes/Menu");
     } catch (err: any) {
       console.error(err);
-      setError(
-        err.response?.data?.message || "Error al establecer la contraseña"
-      );
+      setError(err.response?.data?.message || "Error al establecer la contraseña");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="contenedor-form">
+    <div className="pagina-center">
+  <div className="contenedor-responsive">
+    <div className="card">
+
+      <h2 className="titulo">Creación de Contraseña</h2>
+      <p className="subtitulo">Esta acción solo se realizará una vez</p>
+
       <input
-        className="textarea"
         placeholder="Ingrese una contraseña"
         value={Contraseña}
         onChange={(e) => setContraseña(e.target.value)}
       />
 
       <input
-        className="textarea"
         placeholder="Confirme su contraseña"
         value={ContraseñaN}
         onChange={(e) => setContraseñaN(e.target.value)}
       />
 
-      <button className="btn-submit" onClick={handleSetPassword}>
-        Confirmar contraseña
+      {error && <p className="error">{error}</p>}
+
+      <button
+        className="btn btn-primario"
+        onClick={handleSetPassword}
+        disabled={loading}
+      >
+        {loading ? "Cargando..." : "Confirmar contraseña"}
       </button>
+
     </div>
+  </div>
+</div>
+
   );
-
-  function setError(arg0: any) {
-    throw new Error("Function not implemented.", arg0);
-  }
-
 }
