@@ -264,56 +264,6 @@ form {
   background-color: #f9fafb;
 }
 
-@media(max-width:800px) {
-  header {
-    padding: 7px;
-  }
-
-  .container {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    width: 100%;
-    height: 600px;
-    max-height: 600px;
-    border-radius: 0;
-  }
-
-  .img {
-    right: 50%;
-    transform: translateX(50%);
-    width: 600px;
-    opacity: 1;
-    height: 650px;
-  }
-
-  .img::before,
-  .img::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 100%;
-    z-index: 1;
-  }
-
-  .img::before {
-    left: 0;
-    background: linear-gradient(to right, #f9f9f9, rgba(128, 128, 128, 0));
-  }
-
-  .img::after {
-    right: 0;
-    background: linear-gradient(to left, #f9f9f9, rgba(128, 128, 128, 0));
-  }
-}
-
-@media(max-height:960px) {
-  .container {
-    margin: 0
-  }
-}
 html, body {
     height: 100%;
     overflow:  auto;
@@ -375,6 +325,7 @@ html, body {
   justify-content: center;
 }
 
+
 /* CONTENEDOR DE LAS CARDS */
 .cards-wrapper {
   display: flex;
@@ -387,7 +338,8 @@ html, body {
   height: 110%
 }
 
-/* CARDS */
+
+
 .card-hover {
   position: relative;
   overflow: hidden;
@@ -432,26 +384,15 @@ html, body {
   margin: 0 auto;
 }
 
-/* RESPONSIVO PARA MÓVILES */
-@media (max-width: 768px) {
-  .cards-wrapper {
-    flex-wrap: wrap;
-    flex-direction: column;
-    align-items: center;
-    transform: scale(1.0);
-  }
-
-  .card-hover {
-    margin-bottom: 16px; /* separación vertical */
-  }
-}
-
-
-
 .contenedor-responsive{
   width: 100%;
   max-width: var(--card-max-width);
   margin: auto;
+}
+.filtro{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .card{
@@ -464,6 +405,29 @@ html, body {
   flex-direction: column;
   gap: 16px;
 }
+.card.resultado-card{
+  margin-top: 0.5cm;
+ cursor: pointer;
+ display: flex;
+ flex-direction: column;
+ justify-content: space-between;
+
+}
+.card.resultado{
+    margin-top: 10px;
+    padding: 20px;
+    background: white;
+    border: 1px solid #ddd;
+}
+.card-Busqueda{
+  width: 90%;
+  max-width: 850px;
+  margin-top:5px ;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 
 
 .titulo{
@@ -481,9 +445,9 @@ html, body {
 
 input, 
 textarea{
-width: 90%;
-padding: 12px;
-border-radius: 10px;
+width: 95% !important;
+padding: 10px;
+border-radius: 9px;
 border: 1px solid #ccc;
 background: #fafafa;
 font-size:var(--font-md);
@@ -656,24 +620,6 @@ img {
   align-items: center;
 }
 
-
-
-
-@media (max-width: 480px) {
-  .card {
-    padding: 16px;
-  }
-
-  .titulo {
-    font-size: 1.4rem;
-  }
-
-  button,
-  input,
-  textarea {
-    font-size: var(--font-sm);
-  }
-}
 .logo {
     position: relative;
     filter: invert(1);
@@ -712,7 +658,6 @@ html, body {
   background-color: var(--color-bg) !important;
 }
 
-/* Inputs, textareas y cards siguen siendo blancos, NO se modifica nada visual */
 .card,
 input,
 textarea {
@@ -720,25 +665,111 @@ textarea {
 }
 
 
-/* === 3. Corregir tus degradados que metían colores distintos === */
-
 .img::after {
   background: linear-gradient(to right, var(--color-bg), transparent) !important;
 }
 
-@media (max-width: 900px) {
-  .img::before {
-    background: linear-gradient(to right, var(--color-bg), transparent) !important;
-  }
-
-  .img::after {
-    background: linear-gradient(to left, var(--color-bg), transparent) !important;
-  }
-}
-
-
-/* === 4. Evitar parches de fondo en capas internas === */
 main, 
 .pagina-center {
   background-color: var(--color-bg) !important;
 }
+
+
+select option::before {
+  content: "● ";
+}
+
+
+
+@media (max-width: 1024px) {
+  .container {
+    grid-template-columns: 1fr;
+    height: auto;
+    min-height: auto;
+  }
+
+  .img {
+    display: none;
+  }
+
+  .cards-wrapper {
+    width: 100%;
+    margin-left: 0;
+    flex-wrap: wrap;
+  }
+}
+
+/* CELULARES GRANDES */
+@media (max-width: 768px) {
+  header {
+    padding: 10px;
+    height: 50px;
+  }
+
+  header::after,
+  header::before {
+    min-width: 200px;
+    transform: skew(30deg);
+  }
+
+  .container {
+    padding: 1rem;
+    margin: 1rem;
+  }
+
+  .containerSection {
+    height: auto;
+  }
+
+  .title {
+    font-size: 1.4rem;
+  }
+
+  .buttonContainer {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  input, textarea {
+    width: 100%;
+  }
+
+  .cards-wrapper {
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .card-hover {
+    max-width: 100%;
+  }
+
+  .pagina-center {
+    padding-top: 20px;
+  }
+}
+
+/* CELULARES PEQUEÑOS */
+@media (max-width: 480px) {
+  .titulo.menu-card {
+    font-size: 1.8rem;
+  }
+
+  .card-hover .card-img {
+    height: 150px;
+  }
+
+  .container {
+    margin: 10px;
+    padding: 10px;
+  }
+
+  .spinner {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+
+

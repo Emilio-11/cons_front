@@ -25,7 +25,7 @@ export default function MenuReportes() {
 
           <div
             className="card card-hover"
-            onClick={() => router.push("/Reportes/Consulta")}
+            onClick={() => router.push("/Reportes/Estadisticas")}
           >
             <img src="/persona.png" alt="persona" className="card-img" />
             <p className="subtitulo">Consulta</p>
