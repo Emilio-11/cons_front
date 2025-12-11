@@ -678,6 +678,46 @@ main,
 select option::before {
   content: "● ";
 }
+/* ================================
+   Paginación General
+================================ */
+
+.paginacion {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+    align-items: center;
+}
+
+/* Botones de paginación */
+.btn-paginacion {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: bold;
+    border: none;
+    background-color: #2563eb; /* Azul elegante */
+    color: white;
+    cursor: pointer;
+    transition: 0.25s ease-in-out;
+}
+
+.btn-paginacion:hover:not(:disabled) {
+    background-color: #1d4ed8;
+    transform: scale(1.05);
+}
+
+.btn-paginacion:disabled {
+    background-color: #9ca3af; /* Gris */
+    cursor: not-allowed;
+}
+
+/* Texto de paginación */
+.paginacion-info {
+    font-weight: bold;
+    font-size: 1rem;
+}
+
 
 
 

@@ -1,0 +1,428 @@
+[1mdiff --git a/src/app/Reportes/Estadisticas/page.tsx b/src/app/Reportes/Estadisticas/page.tsx[m
+[1mindex d425151..265d9fb 100644[m
+[1m--- a/src/app/Reportes/Estadisticas/page.tsx[m
+[1m+++ b/src/app/Reportes/Estadisticas/page.tsx[m
+[36m@@ -1,463 +1,7 @@[m
+[31m-'use client';[m
+[32m+[m[32mimport ReportesPage from "@/app/componentes/admin";[m
+ [m
+[31m-import { useEffect, useState } from 'react';[m
+[31m-[m
+[31m-// =======================[m
+[31m-// TYPES[m
+[31m-// =======================[m
+[31m-interface Concesionaria {[m
+[31m-    id_Concesionaria: number;[m
+[31m-    numAutorizado: string;[m
+[31m-}[m
+[31m-[m
+[31m-interface TipoReporte {[m
+[31m-    id_tipoReporte: number;[m
+[31m-    tipoReporte: string;[m
+[31m-}[m
+[31m-[m
+[31m-interface Estado {[m
+[31m-    id_Estado: number;[m
+[31m-    estado: string;[m
+[31m-}[m
+[31m-[m
+[31m-interface FiltroReporteDto {[m
+[31m-    fechaInicio?: string;[m
+[31m-    fechaFin?: string;[m
+[31m-    estado?: number;[m
+[31m-    tipoReporte?: number;[m
+[31m-    concesionaria?: number;[m
+[31m-    usuario?: number;[m
+[31m-    conImagen?: boolean;[m
+[31m-    texto?: string;[m
+[31m-    page?: number;[m
+[31m-    limit?: number;[m
+[31m-    orderFecha?: 'ASC' | 'DESC';[m
+[31m-    agrupar?: boolean;[m
+[31m-    orderTotal?: 'ASC' | 'DESC';[m
+[31m-}[m
+[31m-[m
+[31m-export default function ReportesPage() {[m
+[31m-[m
+[31m-    const [tipos, setTipos] = useState<TipoReporte[]>([]);[m
+[31m-    const [estados, setEstados] = useState<Estado[]>([]);[m
+[31m-    const [concesionarias, setConcesionarias] = useState<Concesionaria[]>([]);[m
+[31m-[m
+[31m-    const [filtros, setFiltros] = useState<FiltroReporteDto>({[m
+[31m-        page: 1,[m
+[31m-        limit: 5[m
+[31m-    });[m
+[31m-[m
+[31m-    const [resultados, setResultados] = useState<any[]>([]);[m
+[31m-    const [loading, setLoading] = useState(false);[m
+[31m-    const [detalle, setDetalle] = useState<any | null>(null);[m
+[31m-[m
+[31m-    const [meta, setMeta] = useState({[m
+[31m-        total: 0,[m
+[31m-        totalPages: 1,[m
+[31m-        page: 1[m
+[31m-    });[m
+[31m-[m
+[31m-    const [hasSearched, setHasSearched] = useState(false);[m
+[31m-    const [grupoAbierto, setGrupoAbierto] = useState<string | null>(null);[m
+[31m-    const [reportesGrupo, setReportesGrupo] = useState<any[]>([]);[m
+[31m-[m
+[31m-[m
+[31m-    // =======================[m
+[31m-    // CATÁLOGOS[m
+[31m-    // =======================[m
+[31m-    useEffect(() => {[m
+[31m-        fetch('http://localhost:3024/consecionarias')[m
+[31m-            .then(r => r.json())[m
+[31m-            .then(setConcesionarias);[m
+[31m-[m
+[31m-        fetch('http://localhost:3024/reportes/tipos')[m
+[31m-            .then(r => r.json())[m
+[31m-            .then(setTipos);[m
+[31m-[m
+[31m-        fetch('http://localhost:3024/reportes/estados')[m
+[31m-            .then(r => r.json())[m
+[31m-            .then(setEstados);[m
+[31m-    }, []);[m
+[31m-[m
+[31m-    // =======================[m
+[31m-    // BUSCAR REPORTES[m
+[31m-    // =======================[m
+[31m-    async function buscar() {[m
+[31m-        setLoading(true);[m
+[31m-[m
+[31m-        // EVITA ERRORES AL CAMBIAR AGRUPAR[m
+[31m-        setResultados([]);[m
+[31m-        setDetalle(null);[m
+[31m-        setMeta({ total: 0, totalPages: 1, page: 1 });[m
+[31m-[m
+[31m-        const params = new URLSearchParams();[m
+[31m-        Object.entries(filtros).forEach(([key, value]) => {[m
+[31m-            if (value !== undefined && value !== null && value !== "") {[m
+[31m-                params.append(key, String(value));[m
+[31m-            }[m
+[31m-        });[m
+[31m-[m
+[31m-        const res = await fetch([m
+[31m-            `http://localhost:3024/reportes/buscar?${params.toString()}`[m
+[31m-        );[m
+[31m-[m
+[31m-        const data = await res.json();[m
+[31m-[m
+[31m-        setResultados(data.data || []);[m
+[31m-[m
+[31m-        setMeta({[m
+[31m-            total: data.total,[m
+[31m-            page: data.page,[m
+[31m-            totalPages: data.totalPages[m
+[31m-        });[m
+[31m-[m
+[31m-        setDetalle(null);[m
+[31m-        setLoading(false);[m
+[31m-        setHasSearched(true);[m
+[31m-    }[m
+[31m-    // ==============================[m
+[31m-        // FUNCIÓN CARGAR GRUPO [m
+[31m-        // ==============================[m
+[31m-        async function cargarGrupo(concesionaria: string) {[m
+[31m-            // Si está abierto, se cierra[m
+[31m-            if (grupoAbierto === concesionaria) {[m
+[31m-                setGrupoAbierto(null);[m
+[31m-                setReportesGrupo([]);[m
+[31m-                return;[m
+[31m-            }[m
+[31m-[m
+[31m-            setGrupoAbierto(concesionaria);[m
+[31m-            setReportesGrupo([]);[m
+[31m-[m
+[31m-            const params = new URLSearchParams();[m
+[31m-            params.append("concesionaria", concesionaria);[m
+[31m-[m
+[31m-            // Evitar agrupación[m
+[31m-            params.append("agrupar", "false");[m
+[31m-            params.append("limit", "9999"); // Para traer todos los reportes[m
+[31m-[m
+[31m-            const res = await fetch([m
+[31m-                `http://localhost:3024/reportes/buscar?${params.toString()}`[m
+[31m-            );[m
+[31m-[m
+[31m-            const data = await res.json();[m
+[31m-[m
+[31m-            setReportesGrupo(data.data || []);[m
+[31m-        }[m
+[31m-[m
+[31m-    function handleChange(key: keyof FiltroReporteDto, value: any) {[m
+[31m-        setFiltros(prev => ({ ...prev, [key]: value }));[m
+[31m-    }[m
+[31m-[m
+[31m-    useEffect(() => {[m
+[31m-        if (hasSearched) buscar();[m
+[31m-    }, [filtros.page]);[m
+[31m-[m
+[31m-    const estadoColor = (estado: string) => {[m
+[31m-        if (estado === 'Pendiente') return '#9ca3af';[m
+[31m-        if (estado === 'En Proceso') return '#fbbf24';[m
+[31m-        if (estado === 'Resuelto') return '#22c55e';[m
+[31m-        return '#a3a3a3';[m
+[31m-    };[m
+[31m-[m
+[31m-    return ([m
+[31m-        <div className="filtro">[m
+[31m-[m
+[31m-            <div className="contenedor-responsive card" style={{ maxWidth: "800px", marginTop: "0.5cm", alignItems: "center" }}>[m
+[31m-                <h1 className="titulo">Filtros de Reportes</h1>[m
+[31m-[m
+[31m-                <div className="groupInput">[m
+[31m-[m
+[31m-                    <input type="date" onChange={e => handleChange('fechaInicio', e.target.value)} />[m
+[31m-                    <input type="date" onChange={e => handleChange('fechaFin', e.target.value)} />[m
+[31m-[m
+[31m-                    <select onChange={e => handleChange('concesionaria', Number(e.target.value))}>[m
+[31m-                        <option value="">Concesionaria</option>[m
+[31m-                        {concesionarias.map(c => ([m
+[31m-                            <option key={c.id_Concesionaria} value={c.id_Concesionaria}>[m
+[31m-                                {c.numAutorizado}[m
+[31m-                            </option>[m
+[31m-                        ))}[m
+[31m-                    </select>[m
+[31m-[m
+[31m-                    <select onChange={e => handleChange('tipoReporte', Number(e.target.value))}>[m
+[31m-                        <option value="">Tipo de reporte</option>[m
+[31m-                        {tipos.map(t => ([m
+[31m-                            <option key={t.id_tipoReporte} value={t.id_tipoReporte}>[m
+[31m-                                {t.tipoReporte}[m
+[31m-                            </option>[m
+[31m-                        ))}[m
+[31m-                    </select>[m
+[31m-[m
+[31m-                    <select onChange={e => handleChange('estado', Number(e.target.value))}>[m
+[31m-                        <option value="">Estado</option>[m
+[31m-                        {estados.map(s => ([m
+[31m-                            <option key={s.id_Estado} value={s.id_Estado} style={{ color: estadoColor(s.estado), fontWeight: "600" }}>[m
+[31m-                                🔵 {s.estado}[m
+[31m-                            </option>[m
+[31m-                        ))}[m
+[31m-                    </select>[m
+[31m-[m
+[31m-                    <input type="text" placeholder="Buscar texto..." onChange={e => handleChange('texto', e.target.value)} />[m
+[31m-[m
+[31m-                    <select onChange={e => handleChange('conImagen', e.target.value === 'true')}>[m
+[31m-                        <option value="">¿Tiene imagen?</option>[m
+[31m-                        <option value="true">Con imagen</option>[m
+[31m-                        <option value="false">Sin imagen</option>[m
+[31m-                    </select>[m
+[31m-[m
+[31m-                    <select onChange={e => handleChange('orderFecha', e.target.value as any)}>[m
+[31m-                        <option value="">Orden fecha</option>[m
+[31m-                        <option value="ASC">Más antiguo → reciente</option>[m
+[31m-                        <option value="DESC">Más reciente → antiguo</option>[m
+[31m-                    </select>[m
+[31m-[m
+[31m-                    <select onChange={e => handleChange('agrupar', e.target.value === 'true')}>[m
+[31m-                        <option value="false">Agrupar</option>[m
+[31m-                        <option value="true">Agrupar por concesionaria</option>[m
+[31m-                    </select>[m
+[31m-[m
+[31m-                    <select onChange={e => handleChange('orderTotal', e.target.value as any)}>[m
+[31m-                        <option value="">Orden total</option>[m
+[31m-                        <option value="ASC">Total menor → mayor</option>[m
+[31m-                        <option value="DESC">Total mayor → menor</option>[m
+[31m-                    </select>[m
+[31m-[m
+[31m-                </div>[m
+[31m-[m
+[31m-                <button[m
+[31m-                    className="btn btn-primario"[m
+[31m-                    onClick={() => {[m
+[31m-                        setFiltros(prev => ({ ...prev, page: 1 }));[m
+[31m-                        buscar();[m
+[31m-                    }}[m
+[31m-                >[m
+[31m-                    Buscar[m
+[31m-                </button>[m
+[31m-            </div>[m
+[31m-[m
+[31m-            {loading && <p>Cargando...</p>}[m
+[31m-[m
+[31m-            {!loading && hasSearched && meta.total > 0 && ([m
+[31m-                <p style={{ marginTop: "10px", fontSize: "1.1rem" }}>[m
+[31m-                    <strong>Total de reportes encontrados:</strong> {meta.total}[m
+[31m-                </p>[m
+[31m-            )}[m
+[31m-[m
+[31m-            {hasSearched && meta.total > 0 && ([m
+[31m-                <div style={{[m
+[31m-                    marginTop: "10px",[m
+[31m-                    display: "flex",[m
+[31m-                    alignItems: "center",[m
+[31m-                    gap: "15px",[m
+[31m-                    justifyContent: "center"[m
+[31m-                }}>[m
+[31m-[m
+[31m-                    <button[m
+[31m-                        className="btn btn-secundario"[m
+[31m-                        disabled={meta.page <= 1}[m
+[31m-                        onClick={() => {[m
+[31m-                            setFiltros(prev => ({ ...prev, page: prev.page! - 1 }));[m
+[31m-                        }}[m
+[31m-                    >[m
+[31m-                        ⬅️ Anterior[m
+[31m-                    </button>[m
+[31m-[m
+[31m-                    <span style={{ fontWeight: "bold" }}>[m
+[31m-                        Página {meta.page} de {meta.totalPages}[m
+[31m-                    </span>[m
+[31m-[m
+[31m-                    <button[m
+[31m-                        className="btn btn-secundario"[m
+[31m-                        disabled={meta.page >= meta.totalPages}[m
+[31m-                        onClick={() => {[m
+[31m-                            setFiltros(prev => ({ ...prev, page: prev.page! + 1 }));[m
+[31m-                        }}[m
+[31m-                    >[m
+[31m-                        Siguiente ➡️[m
+[31m-                    </button>[m
+[31m-                </div>[m
+[31m-            )}[m
+[31m-[m
+[31m-            {/* ============================== */}[m
+[31m-            {/*       RESULTADOS       */}[m
+[31m-            {/* ============================== */}[m
+[31m-            <div className="card-Busqueda">[m
+[31m-[m
+[31m-                {resultados.map((r, i) => {[m
+[31m-[m
+[31m-                    [m
+[31m-                    if (!r || typeof r !== "object") return null;[m
+[31m-[m
+[31m-                [m
+[31m-                    [m
+[31m-                    // ==============================[m
+[31m-                    // VISTA AGRUPADA[m
+[31m-                    // ==============================[m
+[31m-                    if (filtros.agrupar) {[m
+[31m-                return ([m
+[31m-                <div key={i} style={{ width: "100%" }}>[m
+[31m-                    <div[m
+[31m-                        className="card resultado-card"[m
+[31m-                        onClick={() => cargarGrupo(r.concesionaria)}[m
+[31m-                        style={{ cursor: "pointer", transition: "0.3s" }}[m
+[31m-                    >[m
+[31m-                        <h3 style={{ fontSize: "1.2rem" }}>[m
+[31m-                            Concesionaria: {r.concesionaria}[m
+[31m-                        </h3>[m
+[31m-[m
+[31m-                        <p><strong>Tipo de reporte:</strong> {r.tipoReporte}</p>[m
+[31m-                        <p><strong>Total:</strong> {r.total}</p>[m
+[31m-                    </div>[m
+[31m-[m
+[31m-                            {/* Mostrar reportes del grupo */}[m
+[31m-                            {grupoAbierto === r.concesionaria && ([m
+[31m-                                <div[m
+[31m-                                    style={{[m
+[31m-                                        marginTop: "10px",[m
+[31m-                                        animation: "fadeIn 0.3s",[m
+[31m-                                        paddingLeft: "20px"[m
+[31m-                                    }}[m
+[31m-                                >[m
+[31m-[m
+[31m-                                    {/* Cargando */}[m
+[31m-                                    {reportesGrupo.length === 0 && ([m
+[31m-                                        <p style={{ opacity: 0.7 }}>Cargando reportes...</p>[m
+[31m-                                    )}[m
+[31m-[m
+[31m-                                    {/* Reportes individuales */}[m
+[31m-                                    {reportesGrupo.length > 0 &&[m
+[31m-                                        reportesGrupo.map((rep, idx) => ([m
+[31m-                                            <div[m
+[31m-                                                key={idx}[m
+[31m-                                                className="card resultado-card"[m
+[31m-                                                style={{[m
+[31m-                                                    marginTop: "10px",[m
+[31m-                                                    borderLeft: "4px solid #2563eb"[m
+[31m-                                                }}[m
+[31m-                                            >[m
+[31m-                                                <h3 style={{ fontSize: "1.1rem" }}>[m
+[31m-                                                    Reporte #{rep.id_Reporte}[m
+[31m-                                                </h3>[m
+[31m-[m
+[31m-                                                <p style={{ opacity: 0.8 }}>[m
+[31m-                                                    {rep.descripcion?.slice(0, 120)}...[m
+[31m-                                                </p>[m
+[31m-[m
+[31m-                                                <p>[m
+[31m-                                                    <strong>Estado:</strong>{" "}[m
+[31m-                                                    {rep.estado?.estado ?? rep.estado}[m
+[31m-                                                </p>[m
+[31m-                                            </div>[m
+[31m-                                        ))}[m
+[31m-                                </div>[m
+[31m-                            )}[m
+[31m-                        </div>[m
+[31m-                    );[m
+[31m-                }[m
+[31m-[m
+[31m-[m
+[31m-                    // ==============================[m
+[31m-                    //   ⬇⬇⬇ NORMAL ⬇⬇⬇[m
+[31m-                    // ==============================[m
+[31m-                    if (r.id_Reporte == null) return null;[m
+[31m-[m
+[31m-                    return ([m
+[31m-                        <div key={i} style={{ width: "100%" }}>[m
+[31m-[m
+[31m-                            <div[m
+[31m-                                className="card resultado-card"[m
+[31m-                                onClick={() =>[m
+[31m-                                    setDetalle(detalle?.id_Reporte === r.id_Reporte ? null : r)[m
+[31m-                                }[m
+[31m-                            >[m
+[31m-                                <h3 style={{ fontSize: "1.2rem", marginBottom: "6px" }}>[m
+[31m-                                    Reporte #{r.id_Reporte}[m
+[31m-                                </h3>[m
+[31m-[m
+[31m-                                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>[m
+[31m-                                    <span[m
+[31m-                                        style={{[m
+[31m-                                            width: "12px",[m
+[31m-                                            height: "12px",[m
+[31m-                                            borderRadius: "50%",[m
+[31m-                                            backgroundColor: estadoColor([m
+[31m-                                                typeof r.estado === "object" ? r.estado.estado : r.estado[m
+[31m-                                            )[m
+[31m-                                        }}[m
+[31m-                                    />[m
+[31m-                                    <span>[m
+[31m-                                        {typeof r.estado === "object" ? r.estado.estado : r.estado}[m
+[31m-                                    </span>[m
+[31m-                                </div>[m
+[31m-[m
+[31m-                                <p style={{ opacity: 0.8, marginTop: "5px" }}>[m
+[31m-                                    {r.descripcion?.slice(0, 120)}...[m
+[31m-                                </p>[m
+[31m-                            </div>[m
+[31m-[m
+[31m-                            {detalle?.id_Reporte === r.id_Reporte && ([m
+[31m-                                <div className="card resultado">[m
+[31m-[m
+[31m-                                    <h2 className="titulo">Detalle del Reporte</h2>[m
+[31m-[m
+[31m-                                    <div style={{ marginTop: "20px", lineHeight: "1.8", fontSize: "1.1rem" }}>[m
+[31m-                                        <p><strong>ID Reporte:</strong> {detalle.id_Reporte}</p>[m
+[31m-                                        <p><strong>Descripción:</strong> {detalle.descripcion}</p>[m
+[31m-[m
+[31m-                                        {detalle.imagen ? ([m
+[31m-                                            <p style={{ wordBreak: "break-all" }}>[m
+[31m-                                                <strong>URL imagen: </strong>[m
+[31m-                                                {detalle.imagen.replace("&export=download", "")}[m
+[31m-                                            </p>[m
+[31m-                                        ) : ([m
+[31m-                                            <p>No hay imagen</p>[m
+[31m-                                        )}[m
+[31m-[m
+[31m-                                        <p><strong>Fecha:</strong> {new Date(detalle.fecha_reporte).toLocaleString()}</p>[m
+[31m-[m
+[31m-                                        <hr />[m
+[31m-[m
+[31m-                                        <h3>Estado</h3>[m
+[3
