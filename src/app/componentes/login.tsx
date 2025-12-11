@@ -21,22 +21,26 @@ export default function Login() {
 
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    if (!token) return;
+    const checkToken = async () => {
+      const token = sessionStorage.getItem("token");
+      if (!token) return;
 
-    try {
-      const payload = jwtDecode<{ tipo: string }>(token);
+      try {
+        const payload = await jwtDecode<{ tipo: string }>(token);
 
-      // payload.tipo viene del backend
-      if (payload.tipo === "Administrador") {
-        router.replace("/Reportes/Estadisticas");
-      } else {
-        router.replace("/Reportes/QR");
+        // payload.tipo viene del backend
+        if (payload.tipo == "Administrador") {
+          router.replace("/Reportes/Estadisticas");
+        } else {
+          router.replace("/Reportes/QR");
+        }
+      } catch (error) {
+        console.error("Token inválido", error);
+        sessionStorage.removeItem("token");
       }
-    } catch (error) {
-      console.error("Token inválido", error);
-      sessionStorage.removeItem("token");
-    }
+    };
+
+    checkToken();
   }, [router]);
 
 
@@ -73,11 +77,11 @@ export default function Login() {
       sessionStorage.setItem("idUser", data.idUser);
 
       try {
-        const decoded = jwtDecode<TokenPayload>(data.access_token);
+        const decoded = await jwtDecode<TokenPayload>(data.access_token);
 
 
         // 4. Lógica de Redirección según el tipo
-        if (decoded.tipo === 'Administrador') {
+        if (decoded.tipo == 'Administrador') {
           router.push("/Reportes/Estadisticas"); // Ruta para admins
         } else {
           router.push("/Reportes/Menu");   // Ruta para usuarios normales
