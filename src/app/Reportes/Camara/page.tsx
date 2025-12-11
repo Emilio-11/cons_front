@@ -1,5 +1,13 @@
-import CameraCard from  "@/app/componentes/camaraCard";
+import AuthGuard from "@/app/componentes/AuthGuard";
+import CameraCard from "@/app/componentes/camaraCard";
 
 export default function ViewCamara() {
-  return <CameraCard />;
+  return (
+    <AuthGuard allowedRoles={['Administrador', "Comunidad UNAM", "Externo"]}>
+
+      <CameraCard />
+
+    </AuthGuard>
+
+  );
 }
