@@ -4,6 +4,13 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 
+interface TokenPayload {
+  sub: number;
+  email: string;
+  tipo: string; // O 'role', asegúrate de cómo se llama en tu backend
+  exp?: number; // Fecha de expiración (opcional pero útil)
+}
+
 
 export default function Login() {
 
@@ -54,7 +61,7 @@ export default function Login() {
       if (!res.ok) {
         const errorData = await res.json();
         alert(errorData.message || "Error en el login");
-         setLoading(false);
+        setLoading(false);
         return;
       }
 
@@ -63,7 +70,26 @@ export default function Login() {
       // Guardar el token
       sessionStorage.setItem("token", data.access_token);
       //Guardo el id de Usuario
-      sessionStorage.setItem("idUser",data.idUser);
+      sessionStorage.setItem("idUser", data.idUser);
+
+      try {
+        const decoded = jwtDecode<TokenPayload>(data.access_token);
+
+
+        // 4. Lógica de Redirección según el tipo
+        if (decoded.tipo === 'Administrador') {
+          router.push("/Reportes/Estadisticas"); // Ruta para admins
+        } else {
+          router.push("/Reportes/Menu");   // Ruta para usuarios normales
+        }
+
+      } catch (decodeError) {
+        console.error("Error al decodificar el token:", decodeError);
+        alert("El token recibido no es válido.");
+        setLoading(false);
+      }
+
+
       // El redireccionamiento ya lo hace el useEffect, aquí no hace falta
       router.push("/Reportes/Menu");
 
@@ -76,61 +102,61 @@ export default function Login() {
 
   return (
     <div className="pagina-center">
-  <div className="contenedor-responsive">
-    
-    <div className="card">
-      <h2 className="titulo">S.I.D.E.C</h2>
+      <div className="contenedor-responsive">
 
-      <div className="containerInput">
-        <label className="label" htmlFor="usuario">Correo Electrónico</label>
-        <input
-          id="usuario"
-          type="text"
-          placeholder="Coloca tu correo electrónico"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <div className="card">
+          <h2 className="titulo">S.I.D.E.C</h2>
+
+          <div className="containerInput">
+            <label className="label" htmlFor="usuario">Correo Electrónico</label>
+            <input
+              id="usuario"
+              type="text"
+              placeholder="Coloca tu correo electrónico"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+
+          <div className="containerInput">
+            <label className="label" htmlFor="password">Contraseña</label>
+            <input
+              id="password"
+              type="password"
+              placeholder="Coloca tu contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+
+          <button className="btn btn-primario" onClick={handleSubmit}>
+            Iniciar sesión
+          </button>
+
+          {/* Separador */}
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <span style={{ flex: 1, height: "1px", background: "#ccc" }}></span>
+            <p style={{ margin: 0 }}>o</p>
+            <span style={{ flex: 1, height: "1px", background: "#ccc" }}></span>
+          </div>
+
+          {/* Botón GOOGLE */}
+          <button className="btn" style={{ background: "white", border: "1px solid #ccc" }} onClick={handleGoogleLogin}>
+            <img
+              src="https://www.svgrepo.com/show/475656/google-color.svg"
+              alt="Google"
+              style={{ width: "22px", marginRight: "10px" }}
+            />
+            Iniciar sesión con Google
+          </button>
+
+          <p className="subtitulo">
+            ¿No estás registrado? <a href="#">Regístrate con Google</a>
+          </p>
+        </div>
+
       </div>
-
-      <div className="containerInput">
-        <label className="label" htmlFor="password">Contraseña</label>
-        <input
-          id="password"
-          type="password"
-          placeholder="Coloca tu contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-
-      <button className="btn btn-primario" onClick={handleSubmit}>
-        Iniciar sesión
-      </button>
-
-      {/* Separador */}
-      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        <span style={{ flex: 1, height: "1px", background: "#ccc" }}></span>
-        <p style={{ margin: 0 }}>o</p>
-        <span style={{ flex: 1, height: "1px", background: "#ccc" }}></span>
-      </div>
-
-      {/* Botón GOOGLE */}
-      <button className="btn" style={{ background: "white", border: "1px solid #ccc" }} onClick={handleGoogleLogin}>
-        <img
-          src="https://www.svgrepo.com/show/475656/google-color.svg"
-          alt="Google"
-          style={{ width: "22px", marginRight: "10px" }}
-        />
-        Iniciar sesión con Google
-      </button>
-
-      <p className="subtitulo">
-        ¿No estás registrado? <a href="#">Regístrate con Google</a>
-      </p>
     </div>
-
-  </div>
-</div>
 
 
   );

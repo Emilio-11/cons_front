@@ -1,8 +1,12 @@
+import AuthGuard from "@/app/componentes/AuthGuard";
 import QrCard from "@/app/componentes/qrCard";
 
 
 export default function ViewQR() {
     return (
-    <QrCard></QrCard>
+        <AuthGuard allowedRoles={["Comunidad UNAM", "Externo"]}>
+            <QrCard></QrCard>
+        </AuthGuard>
+
     )
 }
