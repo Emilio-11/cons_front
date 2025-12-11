@@ -30,9 +30,9 @@ export default function Login() {
 
         // payload.tipo viene del backend
         if (payload.tipo == "Administrador") {
-          router.replace("/Reportes/Estadisticas");
+          router.push("/Reportes/Estadisticas");
         } else {
-          router.replace("/Reportes/QR");
+          router.push("/Reportes/QR");
         }
       } catch (error) {
         console.error("Token inválido", error);
@@ -92,10 +92,6 @@ export default function Login() {
         alert("El token recibido no es válido.");
         setLoading(false);
       }
-
-
-      // El redireccionamiento ya lo hace el useEffect, aquí no hace falta
-      router.push("/Reportes/Menu");
 
     } catch (error) {
       console.error(error);
