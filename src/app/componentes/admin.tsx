@@ -307,6 +307,7 @@ export default function ReportesPage() {
             <div className="card-Busqueda">
                 {resultados.map((r, i) => {
                     if (!r || typeof r !== "object") return null;
+                    
 
                     // ===================== AGRUPADO =====================
                     if (filtros.agrupar) {
