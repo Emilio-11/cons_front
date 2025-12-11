@@ -37,7 +37,7 @@ export default function AuthGuard({ children, allowedRoles }: AuthGuardProps) {
             if (decoded.exp < currentTime) {
                 alert("Tu sesión ha expirado.");
                 sessionStorage.clear();
-                router.push('/login');
+                router.push('/');
                 return;
             }
 
@@ -45,7 +45,7 @@ export default function AuthGuard({ children, allowedRoles }: AuthGuardProps) {
             if (allowedRoles && !allowedRoles.includes(decoded.tipo)) {
                 // Si el usuario existe pero no tiene el rol correcto (ej: Usuario queriendo entrar a Admin)
                 alert("No tienes permisos para acceder a esta página.");
-                router.push('/Reportes/Menu'); // O una página de "Acceso Denegado"
+                router.push('/'); // O una página de "Acceso Denegado"
                 return;
             }
 
