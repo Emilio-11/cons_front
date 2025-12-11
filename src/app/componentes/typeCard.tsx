@@ -12,6 +12,7 @@ export default function TypeCard() {
   const [previewImagen, setPreviewImagen] = useState<string | null>(null);
   const [mensajeEnviado, setMensajeEnviado] = useState(false);
   const [loading, setLoading] = useState(false);
+  const formData = new FormData();
 
   const token =
     typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
@@ -64,22 +65,24 @@ export default function TypeCard() {
       return;
     }
 
-    if (!previewImagen) {
-      alert("No hay imagen para enviar");
-      return;
-    }
+    if(previewImagen){
+      const blob = await fetch(previewImagen).then((res) => res.blob());
+      const file = new File([blob], "evidencia.jpg", { type: "image/jpeg" });
+      formData.append("imagen", file);
+  }
+
+    
 
     setLoading(true);
 
-    const blob = await fetch(previewImagen).then((res) => res.blob());
-    const file = new File([blob], "evidencia.jpg", { type: "image/jpeg" });
+    
 
-    const formData = new FormData();
+    
     formData.append("tipoReporte", String(seleccionada));
     formData.append("estado", "1");
     formData.append("concesionaria", String(concesionariaId));
     formData.append("descripcion", descripcion);
-    formData.append("imagen", file);
+    
     formData.append("fecha", new Date().toISOString());
     formData.append("usuarioId", String(usuarioId));
 

@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 import { WebcamProps } from "react-webcam";
 import { useRouter } from "next/navigation";
 
-
 const Webcam = dynamic<WebcamProps>(
   () => import("react-webcam").then((mod) => mod.default),
   { ssr: false }
@@ -40,6 +39,11 @@ export default function CameraCard() {
     }, 150);
   };
 
+  const avanzarSinFoto = () => {
+    localStorage.removeItem("imagenReporte"); // opcional: limpia cualquier imagen previa
+    router.replace("/Reportes/Type");
+  };
+
   const enviarFoto = () => {
     if (!foto) return alert("No hay foto tomada");
 
@@ -52,45 +56,52 @@ export default function CameraCard() {
   };
 
   return (
-   <div className="pagina-center">
-  <div className="contenedor-responsive">
-    <div className="card">
+    <div className="pagina-center">
+      <div className="contenedor-responsive">
+        <div className="card">
 
-      <h2 className="titulo">Tomar evidencia</h2>
+          <h2 className="titulo">Tomar evidencia</h2>
 
-      {capturando && (
-        <>
-          <Webcam
-            audio={false}
-            ref={webcamRef}
-            screenshotFormat="image/png"
-            videoConstraints={videoConstraints}
-            className="camera-video"
-          />
+          {capturando && (
+            <>
+              <Webcam
+                audio={false}
+                ref={webcamRef}
+                screenshotFormat="image/png"
+                videoConstraints={videoConstraints}
+                className="camera-video"
+              />
 
-          <button className="btn btn-primario" onClick={tomarFoto}>
-            Tomar foto
-          </button>
-        </>
-      )}
+              <button className="btn btn-primario" onClick={tomarFoto}>
+                Tomar foto
+              </button>
 
-      {!capturando && foto && (
-        <div className="camera-preview">
-          <img src={foto} alt="Foto tomada" className="camera-video" />
+              <button className="btn btn-secundario" onClick={avanzarSinFoto}>
+                Avanzar sin foto
+              </button>
+            </>
+          )}
 
-          <button className="btn btn-peligro btn-pequeño" onClick={resetearFoto}>
-            Volver a tomar
-          </button>
+          {!capturando && foto && (
+            <div className="camera-preview">
+              <img src={foto} alt="Foto tomada" className="camera-video" />
 
-          <button className="btn btn-primario" onClick={enviarFoto}>
-            Confirmar y enviar
-          </button>
+              <button className="btn btn-peligro btn-pequeño" onClick={resetearFoto}>
+                Volver a tomar
+              </button>
+
+              <button className="btn btn-primario" onClick={enviarFoto}>
+                Confirmar y enviar
+              </button>
+
+              <button className="btn btn-secundario btn-pequeño" onClick={avanzarSinFoto}>
+                Avanzar sin foto
+              </button>
+            </div>
+          )}
+
         </div>
-      )}
-
+      </div>
     </div>
-  </div>
-</div>
-
   );
 }
