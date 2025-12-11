@@ -53,21 +53,31 @@ export default function QrCard() {
       }
     };
   }, [router]);
+  const handleGoBack = () => {
+    router.back();
+    };
 
   return (
-    <div className="pagina-center">
-    <div className="contenedor-responsive">
-    <div className="card">
+    <div>
+        <button className="btn volver gn" onClick={handleGoBack} >
+            Volver
+            </button>
+        <div className="pagina-center">
+      <div className="contenedor-responsive">
+      <div className="card">
 
-      <h2 className="titulo">Escanear código QR</h2>
+        <h2 className="titulo">Escanear código QR</h2>
 
-      <div id="qr-reader" className="qr-area"></div>
+        <div id="qr-reader" className="qr-area"></div>
 
-      <p className="subtitulo">Apunta la cámara al código</p>
+        <p className="subtitulo">Apunta la cámara al código</p>
 
+      </div>
     </div>
   </div>
-</div>
+
+    </div>
+    
 
   );
 }

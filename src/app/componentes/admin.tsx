@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from "next/navigation";
+
 import { useEffect, useState } from 'react';
 
 // =======================
@@ -41,6 +43,7 @@ export default function ReportesPage() {
     const [tipos, setTipos] = useState<TipoReporte[]>([]);
     const [estados, setEstados] = useState<Estado[]>([]);
     const [concesionarias, setConcesionarias] = useState<Concesionaria[]>([]);
+     const router = useRouter();
 
     const [filtros, setFiltros] = useState<FiltroReporteDto>({
         page: 1,
@@ -71,6 +74,13 @@ export default function ReportesPage() {
         fetch('http://localhost:3024/reportes/tipos').then(r => r.json()).then(setTipos);
         fetch('http://localhost:3024/reportes/estados').then(r => r.json()).then(setEstados);
     }, []);
+    // =======================
+    // FUNCION CERRAR SESION
+    // =======================
+    const handleLogout = () => {
+    sessionStorage.removeItem("token");
+    router.replace("/");
+    };
 
     // =======================
     // FUNCIONES DE ESTADO
@@ -235,8 +245,11 @@ export default function ReportesPage() {
 
     return (
         <div className="filtro">
-
+           
             <div className="contenedor-responsive card" style={{ maxWidth: "800px", marginTop: "0.5cm", alignItems: "center" }}>
+                <button className="btn btn-peligro Ad" onClick={handleLogout}>
+                    Cerrar sesión
+                </button>
                 <h1 className="titulo">Filtros de Reportes</h1>
                 <div className="groupInput">
                     <input
@@ -263,7 +276,7 @@ export default function ReportesPage() {
                         {estados.map(s => <option key={s.id_Estado} value={s.id_Estado} style={{ color: estadoColor(s.estado), fontWeight: '600' }}>🔵 {s.estado}</option>)}
                     </select>
                     <input type="text" placeholder="Buscar texto..." onChange={e => handleChange('texto', e.target.value)} />
-                    <select onChange={e => handleChange('conImagen', e.target.value === 'true')}>
+                    <select onChange={e => handleChange('conImagen', e.target.value as any)}>
                         <option value="">¿Tiene imagen?</option>
                         <option value="true">Con imagen</option>
                         <option value="false">Sin imagen</option>
@@ -305,8 +318,13 @@ export default function ReportesPage() {
 
             {/* RESULTADOS */}
             <div className="card-Busqueda">
-                {resultados.map((r, i) => {
-                    if (!r || typeof r !== "object") return null;
+                {resultados.length === 0 && hasSearched ? (
+                    <p style={{ padding: "10px", color: "#666", textAlign: "center" }}>
+                    ❌ No se encontró ningún reporte con esos filtros.
+                    </p>
+                    ) : 
+                    resultados.map((r, i) => {
+                if (!r || typeof r !== "object") return null;
                     
 
                     // ===================== AGRUPADO =====================

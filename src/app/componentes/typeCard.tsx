@@ -12,7 +12,6 @@ export default function TypeCard() {
   const [previewImagen, setPreviewImagen] = useState<string | null>(null);
   const [mensajeEnviado, setMensajeEnviado] = useState(false);
   const [loading, setLoading] = useState(false);
-  const formData = new FormData();
 
   const token =
     typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
@@ -21,7 +20,9 @@ export default function TypeCard() {
   const usuarioId =
     typeof window !== "undefined" ? sessionStorage.getItem("idUser") : null;
 
-  // --- Obtener tipos ---
+  const formData = new FormData();
+
+  // Obtener tipos
   useEffect(() => {
     const fetchTipos = async () => {
       try {
@@ -34,7 +35,6 @@ export default function TypeCard() {
             },
           }
         );
-
         const data = await res.json();
         setOpciones(data);
       } catch (err) {
@@ -45,13 +45,13 @@ export default function TypeCard() {
     if (token) fetchTipos();
   }, [token]);
 
-  // --- Cargar imagen temporal ---
+  // Cargar imagen previa
   useEffect(() => {
     const img = localStorage.getItem("imagenReporte");
     if (img) setPreviewImagen(img);
   }, []);
 
-  // --- ENVIAR REPORTE ---
+  // Enviar reporte
   const handleSubmit = async () => {
     if (loading) return;
 
@@ -65,24 +65,19 @@ export default function TypeCard() {
       return;
     }
 
-    if(previewImagen){
+    // Si hay foto
+    if (previewImagen) {
       const blob = await fetch(previewImagen).then((res) => res.blob());
       const file = new File([blob], "evidencia.jpg", { type: "image/jpeg" });
       formData.append("imagen", file);
-  }
-
-    
+    }
 
     setLoading(true);
 
-    
-
-    
     formData.append("tipoReporte", String(seleccionada));
     formData.append("estado", "1");
     formData.append("concesionaria", String(concesionariaId));
     formData.append("descripcion", descripcion);
-    
     formData.append("fecha", new Date().toISOString());
     formData.append("usuarioId", String(usuarioId));
 
@@ -101,17 +96,17 @@ export default function TypeCard() {
         return;
       }
 
-      // Mostrar mensaje ANTES de redirigir
+      // Mostrar mensaje visible arriba
       setMensajeEnviado(true);
 
-      // Limpiar
+      // Limpiar foto
       localStorage.removeItem("imagenReporte");
 
       setTimeout(() => {
         router.push("/Reportes/Menu");
-      }, 4000);
+      }, 1500);
     } catch (err) {
-      alert("Error al enviar reporte");
+      alert("Error al enviar el reporte");
       console.error(err);
       setLoading(false);
     }
@@ -119,6 +114,12 @@ export default function TypeCard() {
 
   return (
     <div className="pagina-center">
+      {mensajeEnviado && (
+        <div className="modal-enviado arriba">
+          <p> Reporte enviado correctamente</p>
+        </div>
+      )}
+
       <div className="contenedor-responsive contenedor-reportes">
         <div className="card">
           <h2 className="titulo">Reporta un incidente</h2>
@@ -144,7 +145,17 @@ export default function TypeCard() {
             </select>
           </div>
 
-          {/* Imagen */}
+          {/* Cuando NO hay foto */}
+          {!previewImagen && (
+            <button
+              className="btn btn-primario"
+              onClick={() => router.push("/Reportes/Camara")}
+            >
+              Tomar foto
+            </button>
+          )}
+
+          {/* Cuando SÍ hay foto */}
           {previewImagen && (
             <div className="img-preview">
               <img src={previewImagen} alt="preview" />
@@ -177,13 +188,6 @@ export default function TypeCard() {
               "Enviar reporte"
             )}
           </button>
-
-          {/* Mensaje de confirmación */}
-          {mensajeEnviado && (
-            <div className="modal-enviado">
-              <p>✅ Reporte enviado correctamente</p>
-            </div>
-          )}
         </div>
       </div>
     </div>

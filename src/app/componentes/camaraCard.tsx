@@ -54,9 +54,16 @@ export default function CameraCard() {
       console.error("Error guardando la imagen:", error);
     }
   };
+   const handleGoBack = () => {
+    router.back();
+  };
 
   return (
-    <div className="pagina-center">
+    <div>
+      <button className="btn volver gn" onClick={handleGoBack} >
+            Volver
+            </button>
+      <div className="pagina-center">
       <div className="contenedor-responsive">
         <div className="card">
 
@@ -103,5 +110,9 @@ export default function CameraCard() {
         </div>
       </div>
     </div>
+
+    </div>
+    
+    
   );
 }

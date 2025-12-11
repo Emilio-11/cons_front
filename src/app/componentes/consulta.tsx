@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { jwtDecode } from "jwt-decode";
+import { useRouter } from 'next/navigation';
 
 interface Estado {
     id_Estado: number;
@@ -12,6 +13,7 @@ export default function UserReportesPage() {
     const [reportes, setReportes] = useState<any[]>([]);
     const [detalle, setDetalle] = useState<any | null>(null);
     const [loading, setLoading] = useState(false);
+    const router= useRouter();
 
     const [page, setPage] = useState(1);
     const limit = 5;
@@ -72,8 +74,17 @@ export default function UserReportesPage() {
 
     // 👉 PAGINACIÓN REAL
     const reportesPaginados = reportes.slice((page - 1) * limit, page * limit);
+    
+    
+    const handleGoBack = () => {
+    router.back();
+    };
 
     return (
+        <div>
+            <button className="btn volver gn" onClick={handleGoBack} >
+            Volver
+            </button>
         <div className="filtro">
 
             <div className="contenedor-responsive card" style={{ maxWidth: "700px", marginTop: "1rem" }}>
@@ -231,5 +242,7 @@ export default function UserReportesPage() {
 
             </div>
         </div>
+        </div>
+        
     );
 }
