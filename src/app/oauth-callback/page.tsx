@@ -25,7 +25,7 @@ export default function OAuthCallback() {
 
             // 3. Redirigir según tipo de usuario
             if (payload.tipo === "Administrador") {
-                router.replace("/Admin/Dashboard");
+                router.replace("/Reportes/Estadisticas");
             } else {
                 router.replace("/Reportes/Menu");
             }

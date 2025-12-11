@@ -29,7 +29,7 @@ export default function Login() {
 
       // payload.tipo viene del backend
       if (payload.tipo === "Administrador") {
-        router.replace("/Admin/Dashboard");
+        router.replace("/Reportes/Estadisticas");
       } else {
         router.replace("/Reportes/QR");
       }
